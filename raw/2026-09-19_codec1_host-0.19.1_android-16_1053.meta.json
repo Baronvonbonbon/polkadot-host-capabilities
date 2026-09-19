@@ -1,0 +1,17 @@
+{
+  "productId": "sondeprobes",
+  "sdk": {
+    "@parity/product-sdk": "0.27.0",
+    "@parity/product-sdk-host": "0.19.1",
+    "@parity/product-sdk-keys": "0.3.24",
+    "@parity/product-sdk-statement-store": "0.6.9",
+    "@parity/product-sdk-terminal": "0.8.2",
+    "@parity/truapi": "0.13.1"
+  },
+  "notes": [
+    "Run with no permissions previously granted to sondeprobes.dot: every prompt was fresh, including Android's own location dialog. Web geolocation still failed, in 5 ms, with the permission at 'prompt'.",
+    "host.cloud.upload tests the SDK's cloudStorage.upload, which is known not to work (almanac P6). The route that works, getPreimageManager().submit(), is probed as host.preimage.submit from sonde commit 2bf03a2 on.",
+    "SDK versions are sonde's exact pins at this build (its package.json); the markdown report does not carry them.",
+    "Picked file names are redacted."
+  ]
+}

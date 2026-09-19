@@ -9,7 +9,7 @@ that awaits one without a deadline freezes, and never reaches its fallback.
 | `isInsideContainer()` | outside the app: nobody is there to answer | by design |
 | `preimageManager.lookup(key, cb)` | the content is absent, or was stored under SHA-256: there is no "not found" | almanac P7, sonde |
 | `cloudStorage.fetch(cid)` | the same, until the SDK's own 30 s timeout | almanac P7, sonde |
-| `getChainSpec(genesis)` | a genesis the host doesn't carry: the run waited 45 s | sonde 2026-09-19 |
+| `getChainSpec(genesis)` | any chain other than Paseo Asset Hub, including the devnet chains the host itself stores on | sonde 2026-09-19 |
 | `paymentManager.subscribeBalance(cb)` | always, so far | sonde 2026-09-19 |
 | `cloudStorage.upload` | S1: hung 180 s with no error | FARE |
 | `wallet.signMessage` | until the user answers the prompt | by design |
