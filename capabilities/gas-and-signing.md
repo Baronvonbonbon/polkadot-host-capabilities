@@ -47,6 +47,19 @@ prompt. But no PGAS reached product account #5 on either Asset Hub in the 36 min
 no claim anywhere targeted it. **Expect the PGAS to arrive with your first transaction, not
 before.** A balance check right after `Allocated` will read zero.
 
+**Measured with a transaction (2026-09-19, host.gas.firstTransaction):** product account #5, holding
+nothing, sent one host-signed `System.remark` to each hub, with `AsPgas` set to `None`.
+
+- **Paseo Asset Hub:** the host signed with no allowance step, and the chain refused it
+  `Invalid: Payment`. The host adds no PGAS there.
+- **Paseo Asset Hub Next:** the host showed an "allocate resources" step, then "fails to load
+  transaction", and the call ended `createTransaction failed: User rejected` after about 4 s. No
+  `PgasClaimed` landed on Next during either attempt, for this account or any other.
+- **How working products do it on Next:** a separate 851-byte general (v5) extrinsic carries
+  `claim_pgas` with the ring-VRF proof. The target's normal signed transactions follow, fees paid in
+  PGAS. Every claim seen names `collection: LitePeople`. So the user probably has to be in the
+  People Lite ring for the host to claim.
+
 - **Pass the index as a tagged union.** `value` is a `DerivationIndex`:
   `{ tag: "Index", value: 5 }` (or `{ tag: "Raw", value: <32 bytes> }`). A bare number throws
   `t[o] is not a function` inside the SDK before anything reaches the host.
