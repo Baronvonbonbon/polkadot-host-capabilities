@@ -63,6 +63,12 @@ function get(key: `0x${string}`, ms = 30_000): Promise<Uint8Array | null> {
   AES-GCM works (`host.cloud.seal`). Treat ciphertext as possibly permanent and plaintext
   retention as possibly shorter than you hoped.
 
+## Measured by sonde
+
+`getPreimageManager().submit()` stored 64 random bytes in **29.8 s** and read them back by key in
+154 ms, byte for byte (2026-09-19 12:55). almanac's 256-byte upload took 4.1–8.8 s, so upload time
+varies a lot. Show progress, and give uploads a generous deadline.
+
 ## Reading through the SDK works for BLAKE2b content
 
 On 2026-09-19 at 10:05, `app.cloudStorage.fetch()` of a 79-byte BLAKE2b-256 blob, stored five days

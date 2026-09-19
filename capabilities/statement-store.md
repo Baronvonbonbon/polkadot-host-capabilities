@@ -66,6 +66,12 @@ almanac's working version is `app/src/platform/polkadot.ts` (`statementPort`).
   `AccountFull(submittedExpiry=…, minExpiry=9223372036854775807)`. sonde did exactly this, one
   statement per run on a fresh topic, until its account refused everything else (2026-09-19).
   Always set an expiry, and reuse a `channel` so a new statement replaces the old one.
+- **It gets worse: the account can lock up completely.** On 2026-09-19 12:55, with the account
+  full of no-expiry statements, even another no-expiry statement was refused:
+  `AccountFull(submittedExpiry=MAX, minExpiry=MAX)`. An equal expiry is refused too, and statements
+  without a channel can't be replaced. So nothing more can be published from that account, unless
+  the store drops them on its own; that isn't observed yet. sonde's `sondeprobes.dot` is in this
+  state.
 - **Don't put plaintext in it.** Statements are public gossip, and anyone can compute a topic
   derived from a public id. Seal the data, and derive topics from a shared secret.
 - **Don't assume the signer is the user.** Statements are signed by the product's allowance account,

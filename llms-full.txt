@@ -96,6 +96,12 @@ WebView**, updated through the Play Store separately from the Polkadot app, so i
 the app either. This repository keys runs by date, wire codec, SDK and OS instead. If you can read
 the version off the phone (Settings → About), put it in `runtime.appVersion`.
 
+## How big one host call can be
+
+A 4 MiB value crosses the bridge both ways (host local storage, 2026-09-19 12:55), and 16 MiB is
+refused with an error. Writing 8 MiB killed the page. Treat **4 MiB as the ceiling for any single
+host call.**
+
 ## Calling the host a lot
 
 200 host calls fired at once all answered correctly, in 1.7 s (10 took 175 ms, 50 took 828 ms).
@@ -228,6 +234,12 @@ function get(key: `0x${string}`, ms = 30_000): Promise<Uint8Array | null> {
 - **Don't store anything readable.** Anyone can fetch it by hash. Encrypt first; WebCrypto
   AES-GCM works (`host.cloud.seal`). Treat ciphertext as possibly permanent and plaintext
   retention as possibly shorter than you hoped.
+
+## Measured by sonde
+
+`getPreimageManager().submit()` stored 64 random bytes in **29.8 s** and read them back by key in
+154 ms, byte for byte (2026-09-19 12:55). almanac's 256-byte upload took 4.1–8.8 s, so upload time
+varies a lot. Show progress, and give uploads a generous deadline.
 
 ## Reading through the SDK works for BLAKE2b content
 
@@ -635,7 +647,9 @@ await store!.writeString("s", "v");   await store!.readString("s");
 await store!.clear("k");
 ```
 
-- **Size:** one 4 MiB record was written and read back in 1.2–1.3 s (almanac P1).
+- **Size:** one 4 MiB record was written and read back in 1.2–1.3 s (almanac P1), and again by
+  sonde (2026-09-19 12:55). A 16 MiB write is refused cleanly. **Writing an 8 MiB record killed
+  the page**: the product was reloaded mid-run. **Keep single records at 4 MiB or under.**
 - **Survives:** an app restart, and publishing a new build of the product (almanac P1). An update
   of the Polkadot app and a reinstall are **not measured yet**. Neither is whether the store is in
   phone backups (almanac P5).
@@ -1307,6 +1321,12 @@ almanac's working version is `app/src/platform/polkadot.ts` (`statementPort`).
   `AccountFull(submittedExpiry=…, minExpiry=9223372036854775807)`. sonde did exactly this, one
   statement per run on a fresh topic, until its account refused everything else (2026-09-19).
   Always set an expiry, and reuse a `channel` so a new statement replaces the old one.
+- **It gets worse: the account can lock up completely.** On 2026-09-19 12:55, with the account
+  full of no-expiry statements, even another no-expiry statement was refused:
+  `AccountFull(submittedExpiry=MAX, minExpiry=MAX)`. An equal expiry is refused too, and statements
+  without a channel can't be replaced. So nothing more can be published from that account, unless
+  the store drops them on its own; that isn't observed yet. sonde's `sondeprobes.dot` is in this
+  state.
 - **Don't put plaintext in it.** Statements are public gossip, and anyone can compute a topic
   derived from a public id. Seal the data, and derive topics from a shared secret.
 - **Don't assume the signer is the user.** Statements are signed by the product's allowance account,

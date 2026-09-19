@@ -27,6 +27,12 @@ WebView**, updated through the Play Store separately from the Polkadot app, so i
 the app either. This repository keys runs by date, wire codec, SDK and OS instead. If you can read
 the version off the phone (Settings → About), put it in `runtime.appVersion`.
 
+## How big one host call can be
+
+A 4 MiB value crosses the bridge both ways (host local storage, 2026-09-19 12:55), and 16 MiB is
+refused with an error. Writing 8 MiB killed the page. Treat **4 MiB as the ceiling for any single
+host call.**
+
 ## Calling the host a lot
 
 200 host calls fired at once all answered correctly, in 1.7 s (10 took 175 ms, 50 took 828 ms).

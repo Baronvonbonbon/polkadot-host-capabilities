@@ -21,7 +21,9 @@ await store!.writeString("s", "v");   await store!.readString("s");
 await store!.clear("k");
 ```
 
-- **Size:** one 4 MiB record was written and read back in 1.2–1.3 s (almanac P1).
+- **Size:** one 4 MiB record was written and read back in 1.2–1.3 s (almanac P1), and again by
+  sonde (2026-09-19 12:55). A 16 MiB write is refused cleanly. **Writing an 8 MiB record killed
+  the page**: the product was reloaded mid-run. **Keep single records at 4 MiB or under.**
 - **Survives:** an app restart, and publishing a new build of the product (almanac P1). An update
   of the Polkadot app and a reinstall are **not measured yet**. Neither is whether the store is in
   phone backups (almanac P5).
