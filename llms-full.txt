@@ -528,9 +528,10 @@ probes: [host.gas.smartContractAllowance, host.gas.autoSigning]
 
 # Gas and signing
 
-**Status (2026-09-19): not yet measured on a device.** truapi declares a host-granted gas allowance
-for contract calls and a tap-free signing mode. sonde asks for both from build 15:15:07Z. What
-follows was read off the chains and the SDK's types on 2026-09-19.
+**Status (2026-09-19, codec 1, Android): AutoSigning is not available, so every host signature is a
+tap. The contract-gas allowance answers `Allocated`, but nothing is minted until the account
+transacts.** The findings below come from sonde runs at 15:43 and about 16:00, and from Paseo
+Asset Hub and Asset Hub Next blocks read the same day.
 
 ## PGAS, the testnet gas asset
 
@@ -541,8 +542,12 @@ follows was read off the chains and the SDK's types on 2026-09-19.
   "some person claimed", not which one, and `target` can be any account.
 - **Fees can be paid in it.** The `PgasAllowance` pallet emits `PGASFeePaid { who, actual_fee }`
   when a transaction's fee is taken in PGAS and burned.
-- The asset has no metadata (no symbol, no decimals). One holder read on 2026-09-19 held
-  10,000,000 raw units.
+- The asset has no metadata, but amounts show it has 10 decimals. A claim mints **5 PGAS**
+  (`50000000000` raw). Fees seen on Asset Hub Next were 0.001–0.0065 PGAS a transaction, so one
+  claim covers roughly 750–4,500 transactions.
+- **Seen on Asset Hub Next, 2026-09-19:** each `PgasClaimed` was followed, within 15 blocks, by the
+  target's first transactions, each paying its fee in PGAS. That fits a host that claims lazily, on
+  the first submission.
 
 ```ts
 // Storage key for an account's PGAS: Assets.Account(2000000000, accountId)
@@ -560,14 +565,24 @@ may also grant it implicitly on the first transaction. Only the host can make th
 so a Product can't claim PGAS for itself; it gets PGAS through this call, to a product account
 the host picks by index.
 
+**Measured (2026-09-19):** the host answered `["Allocated"]` after 11.4 s, which suggests a
+prompt. But no PGAS reached product account #5 on either Asset Hub in the 36 minutes after, and
+no claim anywhere targeted it. **Expect the PGAS to arrive with your first transaction, not
+before.** A balance check right after `Allocated` will read zero.
+
+- **Pass the index as a tagged union.** `value` is a `DerivationIndex`:
+  `{ tag: "Index", value: 5 }` (or `{ tag: "Raw", value: <32 bytes> }`). A bare number throws
+  `t[o] is not a function` inside the SDK before anything reaches the host.
 - **Don't use it to fund a private account.** Product accounts derive from the user's root public
   key, so anyone who knows that key can link them.
 
 ## AutoSigning
 
-`AutoSigning` is also a `requestResourceAllocation` tag. `product-sdk-terminal`'s types say it is
-`NotAvailable` on the Android and iOS wallets, which would make every host-signed transaction a
-tap. `host.gas.autoSigning` asks for it and times a signature to find out.
+`AutoSigning` is also a `requestResourceAllocation` tag. **Measured 2026-09-19 on Android: the host
+answers `["NotAvailable"]`** (in 956 ms), and the signature after it took 9.7 s, which was a tap.
+`product-sdk-terminal`'s types say the same for iOS. So every host-signed transaction is a tap, and
+nothing host-signed can run in the background. Work that must happen without the user signs with
+an app-local key (seed it from `deriveEntropy`) and pays its own gas.
 
 ## Measured
 
