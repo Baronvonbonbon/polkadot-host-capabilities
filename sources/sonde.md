@@ -19,7 +19,7 @@ a frozen page. It separates **absent** (`unsupported`), **forbidden** (`blocked`
    **Copy record**. The record has addresses, keys and picked file names removed. It leaves out
    language, time zone and screen size.
 2. Save it as `runs/<key>.json`. The key is in the record: date, wire codec, `product-sdk-host`
-   version and OS.
+   version, OS and the time of capture.
 3. If you skipped a probe by hand, or read the app version off the phone, add a line to `notes` or
    set `runtime.appVersion`.
 4. Run `node tools/build.mjs` and open a pull request.
@@ -36,4 +36,8 @@ The matrix strikes it out. Three from 2026-09-19 were retracted:
 - a SHA-256 CID that the host's lookup can never find
 - `navigateTo` pointed at the page's own URL, which reloads it
 
-All three are fixed in sonde. Read a probe's source before filing a platform bug on its result.
+All three are fixed in sonde. The 10:05 run confirmed the fixes: the genesis resolved, the read
+passed in 245 ms, and `navigateTo` returned without a reload. That run showed a fourth problem of
+the same kind: sonde's spend allowlist didn't hold the one chain the host resolved (Paseo Asset
+Hub), so the upload and statement-submit probes were refused again. Those are retracted too, and the
+allowlist is fixed. Read a probe's source before filing a platform bug on its result.

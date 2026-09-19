@@ -57,8 +57,8 @@ const evidence = {};
 const attention = md.split(/^## /m).find((s) => s.startsWith("Needs attention")) ?? "";
 for (const part of attention.split(/^### /m).slice(1)) {
   const id = part.match(/^`([^`]+)`/)?.[1];
-  const block = part.match(/```\n([\s\S]*?)\n```/)?.[1];
-  if (id && block) evidence[id] = block;
+  const blocks = [...part.matchAll(/```\n([\s\S]*?)\n```/g)].map((m) => m[1]);
+  if (id && blocks.length) evidence[id] = blocks.join("\n\n");
 }
 
 // ── every result row ──────────────────────────────────────────────────────

@@ -67,7 +67,8 @@ for (const file of list("runs", ".json")) {
   }
   const errs = validate(schema, run, file, []);
   if (run.key && `${run.key}.json` !== file) errs.push(`${file}: key is ${run.key}, so the file must be ${run.key}.json`);
-  if (run.key && run.capturedAt && !run.key.startsWith(run.capturedAt.slice(0, 10))) errs.push(`${file}: key date differs from capturedAt`);
+  const stamp = run.capturedAt ? `${run.capturedAt.slice(0, 10)}…_${run.capturedAt.slice(11, 13)}${run.capturedAt.slice(14, 16)}` : "";
+  if (run.key && run.capturedAt && !(run.key.startsWith(run.capturedAt.slice(0, 10)) && run.key.endsWith(stamp.split("…")[1]))) errs.push(`${file}: key date and time must match capturedAt (${stamp})`);
   if (run.key && run.host && !run.key.includes(`_codec${run.host.wireCodec}_`)) errs.push(`${file}: key codec differs from host.wireCodec`);
   const hostPkg = run.host?.sdk?.["@parity/product-sdk-host"];
   if (hostPkg && !run.key?.includes(`_host-${hostPkg}_`)) errs.push(`${file}: key host version differs from host.sdk["@parity/product-sdk-host"]`);

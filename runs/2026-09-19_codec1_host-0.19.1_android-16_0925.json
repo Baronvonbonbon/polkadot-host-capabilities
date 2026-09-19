@@ -1,0 +1,958 @@
+{
+  "schema": "polkadot-host-capabilities/run@1",
+  "key": "2026-09-19_codec1_host-0.19.1_android-16_0925",
+  "capturedAt": "2026-09-19T09:25:40.510Z",
+  "complete": false,
+  "notes": [
+    "The report counted 132 probes; 128 survived the copy. The rest are absent here, not passing.",
+    "SDK versions are sonde's exact pins at this build (its package.json); the markdown report does not carry them.",
+    "Picked file names are redacted."
+  ],
+  "tool": {
+    "name": "sonde",
+    "version": "1.0.0",
+    "build": "2026-09-19T01:54:45.878Z",
+    "source": "https://github.com/Baronvonbonbon/sonde",
+    "runId": "b6846b67-9e6e-49dd-82d9-4e2d1c825276",
+    "productId": "sondeprobes"
+  },
+  "runtime": {
+    "surface": "polkadot-app",
+    "os": "Android 16.0.0",
+    "device": "Pixel 10 Pro XL",
+    "webview": "Chromium 152.0.7977.87",
+    "appVersion": null
+  },
+  "host": {
+    "wireCodec": 1,
+    "truapi": 1,
+    "sdk": {
+      "@parity/product-sdk": "0.27.0",
+      "@parity/product-sdk-host": "0.19.1",
+      "@parity/product-sdk-keys": "0.3.24",
+      "@parity/product-sdk-statement-store": "0.6.9",
+      "@parity/product-sdk-terminal": "0.8.2",
+      "@parity/truapi": "0.13.1"
+    }
+  },
+  "results": {
+    "host.system.container": {
+      "title": "Host container detection",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 1,
+      "detail": "Running inside the Polkadot host container."
+    },
+    "host.system.handshake": {
+      "title": "TrUApi handshake",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 38,
+      "detail": "Handshake completed in 36 ms."
+    },
+    "host.system.version": {
+      "title": "App version — is one exposed at all?",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 1,
+      "detail": "No host API returns an app version. Reports from different builds cannot be attributed to those builds, which is the single largest gap in making these results comparable."
+    },
+    "host.system.createApp": {
+      "title": "createApp — construct the SDK App",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 98,
+      "detail": "App constructed on the configured environment."
+    },
+    "host.system.featureSupported": {
+      "title": "featureSupported / isChainSupported",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 25,
+      "detail": "Queried the host's chain support."
+    },
+    "host.system.navigateTo": {
+      "title": "navigateTo",
+      "status": "skip",
+      "diagnosis": null,
+      "ms": null,
+      "detail": "Skipped by the operator.",
+      "retracted": "Skipped because sonde navigated to its own URL, and an honoured navigation to the page's own URL reloads it. That is the host doing what it was asked. Fixed in sonde on 2026-09-19: it opens an outside URL."
+    },
+    "host.localStorage.roundTrip": {
+      "title": "Host local storage — string, JSON, bytes",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 48,
+      "detail": "All three value types round-trip."
+    },
+    "host.theme.subscribe": {
+      "title": "Theme subscription",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 2503,
+      "detail": "Received 1 theme update(s)."
+    },
+    "host.chain.genesis": {
+      "title": "Chain spec — genesis, name, properties",
+      "status": "timeout",
+      "diagnosis": "never-settled",
+      "ms": 45002,
+      "detail": "Never settled after 45s. A call that neither resolves nor rejects is worse than one that fails.",
+      "retracted": "sonde's host.chain.genesis asked first for a genesis hash that exists on no chain (it shared only its first seven hex digits with Paseo Asset Hub's), and the host never answered for it. Fixed in sonde on 2026-09-19: real hashes, each with its own deadline."
+    },
+    "host.chain.provider": {
+      "title": "Host JSON-RPC provider",
+      "status": "skip",
+      "diagnosis": null,
+      "ms": null,
+      "detail": "Needs \"host.chain.genesis\", which came back timeout. Running anyway would test a placeholder.",
+      "retracted": "Not measured: skipped because host.chain.genesis failed, which was a probe bug."
+    },
+    "host.notifications.push": {
+      "title": "Host push notification",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 57,
+      "detail": "Host accepted a push notification."
+    },
+    "host.chat.list": {
+      "title": "Chat — list subscription",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 2502,
+      "detail": "Chat namespace reachable; 0 room(s) visible."
+    },
+    "host.payment.balance": {
+      "title": "Payment — balance subscription (read-only)",
+      "status": "fail",
+      "diagnosis": "wrong-result",
+      "ms": 3003,
+      "detail": "Subscribed but no balance arrived in 3 s — not even a zero.",
+      "evidence": "A Product cannot show a balance, or decide whether it can afford anything."
+    },
+    "host.preimage.lookup": {
+      "title": "Preimage lookup (read-only)",
+      "status": "fail",
+      "diagnosis": "wrong-result",
+      "ms": 5002,
+      "detail": "Lookup never called back in 5 s — neither a hit nor a miss.",
+      "evidence": "Calling code cannot distinguish 'still looking' from 'never will'."
+    },
+    "host.account.userId": {
+      "title": "getUserId",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 35,
+      "detail": "Returned a user id."
+    },
+    "host.account.productAccounts": {
+      "title": "Per-index product account derivation",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 283,
+      "detail": "4 distinct key(s) across indices — per-index accounts are derivable."
+    },
+    "host.account.legacyAccounts": {
+      "title": "getLegacyAccounts",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 21,
+      "detail": "0 legacy account(s)."
+    },
+    "host.account.deriveEntropy": {
+      "title": "deriveEntropy — determinism",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 121,
+      "detail": "Deterministic: the same input gives the same entropy."
+    },
+    "host.account.eip712": {
+      "title": "EIP-712 with an app-local burner key",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 101,
+      "detail": "Signed and recovered in 3 ms — a contract's ecrecover would accept this."
+    },
+    "host.account.connect": {
+      "title": "wallet.connect + selectAccount",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 95,
+      "detail": "Connected and selected an account."
+    },
+    "host.account.anonymousAlias": {
+      "title": "Ring VRF anonymous alias",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 0,
+      "detail": "getAnonymousAlias() returned null — no alias in this runtime."
+    },
+    "host.account.signMessage": {
+      "title": "wallet.signMessage",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 1078,
+      "detail": "Signed (64 bytes)."
+    },
+    "host.cloud.read": {
+      "title": "Cloud storage read (no signature needed)",
+      "status": "fail",
+      "diagnosis": "threw",
+      "ms": 30008,
+      "detail": "Read returned an error.",
+      "evidence": "cid                   : bafybeifnjwhgxxnsqw7x6lq2yb6jylfsmwhgr2nfdaemdzjuvybjusrzv4\nerror                 : {\"isSdkError\":true,\"source\":\"cloud-storage\",\"name\":\"CloudStorageLookupTimeoutError\",\"cid\":\"bafybeifnjwhgxxnsqw7x6lq2yb6jylfsmwhgr2nfdaemdzjuvybjusrzv4\",\"timeoutMs\":30000}",
+      "retracted": "sonde read a SHA-256 (bafybei…) CID. The host's lookup finds BLAKE2b-256 content only (almanac P7, 2026-09-14), so the read could never succeed. Fixed in sonde on 2026-09-19: it reads a BLAKE2b-256 fixture."
+    },
+    "host.cloud.seal": {
+      "title": "Seal under a crypto-shred key (WebCrypto)",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 2,
+      "detail": "Sealed a placeholder in 0 ms (run the camera probe first for a real payload)."
+    },
+    "host.statement.subscribe": {
+      "title": "Statement Store — subscribe (read-only)",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 6004,
+      "detail": "1 page(s) delivered."
+    },
+    "host.statement.createProof": {
+      "title": "Statement Store — createProofAuthorized",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 52,
+      "detail": "Host produced an authorized proof."
+    },
+    "host.cloud.allowance": {
+      "title": "Request a Bulletin allowance",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 25089,
+      "detail": "Allocated, and the App was rebuilt so cloud storage picks up the slot account."
+    },
+    "host.cloud.upload": {
+      "title": "Cloud storage upload (canary, then payload)",
+      "status": "skip",
+      "diagnosis": "spend-refused-by-allowlist",
+      "ms": null,
+      "detail": "No genesis hash resolved yet — run host.chain.genesis first. Spending on an unidentified chain is refused.",
+      "retracted": "Not measured: refused because no genesis resolved (the host.chain.genesis probe bug) and, separately, sonde's spend allowlist was empty. Both fixed in sonde on 2026-09-19."
+    },
+    "host.cloud.roundTrip": {
+      "title": "Fetch → CID verify → decrypt",
+      "status": "skip",
+      "diagnosis": null,
+      "ms": null,
+      "detail": "Needs \"host.cloud.upload\", which came back skip. Running anyway would test a placeholder.",
+      "retracted": "Not measured: needs host.cloud.upload, which was not run."
+    },
+    "host.statement.submit": {
+      "title": "Statement Store — submit",
+      "status": "skip",
+      "diagnosis": "spend-refused-by-allowlist",
+      "ms": null,
+      "detail": "No genesis hash resolved yet — run host.chain.genesis first. Spending on an unidentified chain is refused.",
+      "retracted": "Not measured: refused because no genesis resolved (the host.chain.genesis probe bug) and sonde's spend allowlist was empty. Both fixed in sonde on 2026-09-19."
+    },
+    "host.permissions.location": {
+      "title": "requestDevicePermission(\"Location\")",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 5671,
+      "detail": "Host granted Location. Web geolocation immediately after: still failed — User denied Geolocation"
+    },
+    "host.permissions.remote": {
+      "title": "requestRemotePermission — all five variants",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 4456,
+      "detail": "5 of 5 granted."
+    },
+    "host.permissions.notifications": {
+      "title": "requestDevicePermission(\"Notifications\")",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 19,
+      "detail": "Host granted Notifications."
+    },
+    "host.permissions.camera": {
+      "title": "requestDevicePermission(\"Camera\")",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 1141,
+      "detail": "Host granted Camera."
+    },
+    "host.permissions.microphone": {
+      "title": "requestDevicePermission(\"Microphone\")",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 1353,
+      "detail": "Host granted Microphone."
+    },
+    "host.permissions.bluetooth": {
+      "title": "requestDevicePermission(\"Bluetooth\")",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 5859,
+      "detail": "Host granted Bluetooth."
+    },
+    "host.permissions.nfc": {
+      "title": "requestDevicePermission(\"NFC\")",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 1413,
+      "detail": "Host granted NFC."
+    },
+    "host.permissions.clipboard": {
+      "title": "requestDevicePermission(\"Clipboard\")",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 816,
+      "detail": "Host granted Clipboard."
+    },
+    "host.permissions.openurl": {
+      "title": "requestDevicePermission(\"OpenUrl\")",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 815,
+      "detail": "Host granted OpenUrl."
+    },
+    "host.permissions.biometrics": {
+      "title": "requestDevicePermission(\"Biometrics\")",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 761,
+      "detail": "Host granted Biometrics."
+    },
+    "web.platform.userAgentData": {
+      "title": "userAgentData high-entropy hints",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 1,
+      "detail": "Device identifies as \"Pixel 10 Pro XL\"."
+    },
+    "web.platform.permissionsApi": {
+      "title": "Permissions API coverage",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 22,
+      "detail": "16 of 20 permission names recognised."
+    },
+    "web.platform.timerResolution": {
+      "title": "performance.now() resolution",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 1,
+      "detail": "Smallest observable tick: 0.1000 ms."
+    },
+    "web.platform.memory": {
+      "title": "Memory measurement",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 0,
+      "detail": "Some memory reporting is available."
+    },
+    "web.platform.battery": {
+      "title": "Battery Status",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 9,
+      "detail": "Exposed — level 100%, on battery."
+    },
+    "web.platform.gamepad": {
+      "title": "Gamepad API",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 1,
+      "detail": "API present; nothing connected (expected)."
+    },
+    "web.platform.locks": {
+      "title": "Web Locks",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 7,
+      "detail": "Acquired and released a named lock."
+    },
+    "web.platform.scheduler": {
+      "title": "Prioritised task scheduling",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 1,
+      "detail": "Present."
+    },
+    "web.platform.speechSynthesis": {
+      "title": "Speech Synthesis voices",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 0,
+      "detail": "speechSynthesis is not present in this runtime"
+    },
+    "web.platform.speechRecognition": {
+      "title": "Speech Recognition",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 0,
+      "detail": "Present."
+    },
+    "web.platform.midi": {
+      "title": "Web MIDI (non-sysex)",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 4,
+      "detail": "Granted — 0 input(s), 0 output(s)."
+    },
+    "web.compute.wasm": {
+      "title": "WebAssembly compile + instantiate",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 1,
+      "detail": "Compiled, instantiated, and executed correctly (compile 0 ms, instantiate 0 ms)."
+    },
+    "web.compute.wasmFeatures": {
+      "title": "WASM feature detection (SIMD, threads, exceptions, bulk memory)",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 0,
+      "detail": "SIMD available — crypto libraries can take their fast path."
+    },
+    "web.compute.subtleCrypto": {
+      "title": "crypto.subtle algorithm matrix",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 58,
+      "detail": "Every algorithm tested works, including Ed25519 and X25519."
+    },
+    "web.compute.structuredClone": {
+      "title": "structuredClone type coverage",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 2,
+      "detail": "All tested types clone."
+    },
+    "web.compute.worker": {
+      "title": "Dedicated Worker round-trip",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 12,
+      "detail": "Worker spawned from a blob URL, computed, and replied correctly."
+    },
+    "web.compute.sharedWorker": {
+      "title": "SharedWorker",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 0,
+      "detail": "Not present in this runtime."
+    },
+    "web.compute.serviceWorker": {
+      "title": "Service Worker registration",
+      "status": "fail",
+      "diagnosis": "threw",
+      "ms": 0,
+      "detail": "ServiceWorker is not available"
+    },
+    "web.compute.sharedArrayBuffer": {
+      "title": "SharedArrayBuffer + Atomics",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 0,
+      "detail": "SharedArrayBuffer is not defined at all."
+    },
+    "web.storage.webStorage": {
+      "title": "localStorage + sessionStorage round-trip",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 2,
+      "detail": "Both stores round-trip."
+    },
+    "web.storage.indexedDb": {
+      "title": "IndexedDB round-trip",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 0,
+      "detail": "indexedDB is not present in this runtime"
+    },
+    "web.storage.cacheStorage": {
+      "title": "CacheStorage round-trip",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 0,
+      "detail": "caches is not present in this runtime"
+    },
+    "web.storage.quota": {
+      "title": "Quota estimate + persistence request",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 11,
+      "detail": "Quota reported; storage is best-effort (evictable)."
+    },
+    "web.storage.cookies": {
+      "title": "Cookies + Cookie Store API",
+      "status": "blocked",
+      "diagnosis": "policy-blocked-by-embedder",
+      "ms": 5,
+      "detail": "A first-party cookie did not persist. In a framed context this is partitioning or third-party cookie blocking, not a broken engine.",
+      "evidence": "navigator.cookieEnabled: true\ndocument.cookie write : did not persist\ncookieStore API       : present\ncookieStore.getAll    : 0 cookie(s)\nhasStorageAccess      : true\nframed                : false"
+    },
+    "web.storage.storageAccessApi": {
+      "title": "Storage Access API",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 0,
+      "detail": "Present."
+    },
+    "web.net.permissionsPolicy": {
+      "title": "Permissions-Policy introspection",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 1,
+      "detail": "Top-level document; 59 feature(s) allowed."
+    },
+    "web.net.csp": {
+      "title": "Content Security Policy in force",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 0,
+      "detail": "No CSP meta tag; any policy is header-delivered and unreadable from script."
+    },
+    "web.net.connection": {
+      "title": "Network Information + online state",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 0,
+      "detail": "Link reports as 4g."
+    },
+    "web.net.fetch": {
+      "title": "fetch — same-origin, CORS, streaming",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 107,
+      "detail": "Same-origin, cross-origin, and streaming all work."
+    },
+    "web.net.websocket": {
+      "title": "WebSocket connect",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 740,
+      "detail": "Connected to wss://rpc.polkadot.io."
+    },
+    "web.net.beacon": {
+      "title": "sendBeacon",
+      "status": "fail",
+      "diagnosis": "wrong-result",
+      "ms": 2,
+      "detail": "sendBeacon returned false — the request was refused, most likely by CSP connect-src."
+    },
+    "web.net.eventSource": {
+      "title": "Server-Sent Events",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 0,
+      "detail": "Present."
+    },
+    "web.net.webTransport": {
+      "title": "WebTransport",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 0,
+      "detail": "Present."
+    },
+    "web.filesystem.blob": {
+      "title": "Blob / File / object URL round-trip",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 30,
+      "detail": "arrayBuffer, object URL, and stream all return the full payload."
+    },
+    "web.filesystem.opfs": {
+      "title": "Origin Private File System",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 28,
+      "detail": "Wrote and read back 64.0 KiB byte-for-byte."
+    },
+    "web.filesystem.fileInput": {
+      "title": "<input type=file> fallback",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 4844,
+      "detail": "Received \"<picked file>\"."
+    },
+    "web.filesystem.showOpenFilePicker": {
+      "title": "File System Access — open picker",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 2495,
+      "detail": "Picked \"<picked file>\"."
+    },
+    "web.filesystem.showSaveFilePicker": {
+      "title": "File System Access — save picker",
+      "status": "skip",
+      "diagnosis": "user-dismissed",
+      "ms": 11,
+      "detail": "Dismissed or aborted: Failed to execute 'showSaveFilePicker' on 'Window': The user aborted a request."
+    },
+    "web.filesystem.showDirectoryPicker": {
+      "title": "File System Access — directory picker",
+      "status": "skip",
+      "diagnosis": "user-dismissed",
+      "ms": 11,
+      "detail": "Dismissed or aborted: Failed to execute 'showDirectoryPicker' on 'Window': The user aborted a request."
+    },
+    "web.sensors.geolocation": {
+      "title": "Geolocation — one-shot fix",
+      "status": "blocked",
+      "diagnosis": "host-callback-missing",
+      "ms": 1,
+      "detail": "User denied Geolocation",
+      "evidence": "permission before : {\"geolocation\":\"prompt\"}\npermission after  : {\"geolocation\":\"prompt\"}"
+    },
+    "web.sensors.geolocationWatch": {
+      "title": "Geolocation — watchPosition",
+      "status": "skip",
+      "diagnosis": null,
+      "ms": null,
+      "detail": "Needs \"web.sensors.geolocation\", which came back blocked. Running anyway would test a placeholder."
+    },
+    "web.sensors.deviceMotionEvents": {
+      "title": "DeviceMotion / DeviceOrientation events",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 3003,
+      "detail": "Receiving events (177 motion, 1 orientation in 3 s)."
+    },
+    "web.sensors.accelerometer": {
+      "title": "Accelerometer (Generic Sensor)",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 103,
+      "detail": "Delivering readings."
+    },
+    "web.sensors.gyroscope": {
+      "title": "Gyroscope (Generic Sensor)",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 102,
+      "detail": "Delivering readings."
+    },
+    "web.sensors.magnetometer": {
+      "title": "Magnetometer (Generic Sensor)",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 0,
+      "detail": "Magnetometer is absent."
+    },
+    "web.sensors.absoluteOrientation": {
+      "title": "AbsoluteOrientationSensor (Generic Sensor)",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 208,
+      "detail": "Delivering readings."
+    },
+    "web.sensors.relativeOrientation": {
+      "title": "RelativeOrientationSensor",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 1,
+      "detail": "Present."
+    },
+    "web.sensors.ambientLight": {
+      "title": "AmbientLightSensor (Generic Sensor)",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 0,
+      "detail": "AmbientLightSensor is absent."
+    },
+    "web.media.enumerateDevices": {
+      "title": "enumerateDevices — labels before grant",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 28,
+      "detail": "3 device(s); 0 with labels."
+    },
+    "web.media.mediaRecorder": {
+      "title": "MediaRecorder codec support",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 1,
+      "detail": "6 of 8 formats supported."
+    },
+    "web.media.imageCapture": {
+      "title": "ImageCapture",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 1,
+      "detail": "Present."
+    },
+    "web.media.camera": {
+      "title": "Camera capture (getUserMedia → still)",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 1432,
+      "detail": "Captured via getUserMedia (480x640, environment camera)."
+    },
+    "web.media.microphone": {
+      "title": "Microphone capture",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 1304,
+      "detail": "Microphone open."
+    },
+    "web.media.displayMedia": {
+      "title": "Screen capture (getDisplayMedia)",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 1,
+      "detail": "mediaDevices.getDisplayMedia is absent — the expected answer on mobile."
+    },
+    "web.media.pictureInPicture": {
+      "title": "Picture-in-Picture",
+      "status": "blocked",
+      "diagnosis": "policy-blocked-by-embedder",
+      "ms": 1,
+      "detail": "document.pictureInPictureEnabled is false — the feature is disabled for this document, most likely by permissions-policy."
+    },
+    "web.ux.vibrate": {
+      "title": "Vibration",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 0,
+      "detail": "Pattern accepted. (Whether the motor actually fired is not observable from script.)"
+    },
+    "web.ux.wakeLock": {
+      "title": "Screen Wake Lock",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 3,
+      "detail": "Acquired a \"screen\" wake lock."
+    },
+    "web.ux.eyeDropper": {
+      "title": "EyeDropper",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 0,
+      "detail": "Not present in this runtime."
+    },
+    "web.ux.virtualKeyboard": {
+      "title": "VirtualKeyboard API",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 0,
+      "detail": "Present."
+    },
+    "web.ux.viewTransitions": {
+      "title": "View Transitions",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 0,
+      "detail": "Present."
+    },
+    "web.ux.badging": {
+      "title": "App Badging",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 0,
+      "detail": "Present."
+    },
+    "web.ux.push": {
+      "title": "Push API",
+      "status": "fail",
+      "diagnosis": "not-implemented",
+      "ms": 0,
+      "detail": "Partially present — 1 of 2 entry points are missing. A half-implemented API is worse than an absent one: feature detection passes and the call fails.",
+      "evidence": "PushManager           : absent\nnavigator.serviceWorker: present (object)"
+    },
+    "web.ux.notifications": {
+      "title": "Notifications",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 1,
+      "detail": "Notification is not present in this runtime"
+    },
+    "web.ux.clipboardWrite": {
+      "title": "Clipboard write",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 6,
+      "detail": "Wrote text to the clipboard."
+    },
+    "web.ux.clipboardRead": {
+      "title": "Clipboard read",
+      "status": "blocked",
+      "diagnosis": "os-denied",
+      "ms": 7,
+      "detail": "Failed to execute 'readText' on 'Clipboard': Read permission denied."
+    },
+    "web.ux.share": {
+      "title": "Web Share — text and URL",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 1,
+      "detail": "navigator.share is not present in this runtime"
+    },
+    "web.ux.shareFiles": {
+      "title": "Web Share — files",
+      "status": "skip",
+      "diagnosis": null,
+      "ms": null,
+      "detail": "Needs \"web.ux.share\", which came back unsupported. Running anyway would test a placeholder."
+    },
+    "web.ux.fullscreen": {
+      "title": "Fullscreen",
+      "status": "blocked",
+      "diagnosis": "policy-blocked-by-embedder",
+      "ms": 1,
+      "detail": "document.fullscreenEnabled is false — disabled for this document, most likely by permissions-policy."
+    },
+    "web.ux.orientationLock": {
+      "title": "Screen orientation lock",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 11,
+      "detail": "screen.orientation.lock() is not available on this device."
+    },
+    "web.ux.idleDetection": {
+      "title": "Idle Detection",
+      "status": "blocked",
+      "diagnosis": "os-denied",
+      "ms": 4,
+      "detail": "Permission is \"denied\"."
+    },
+    "web.ux.contactPicker": {
+      "title": "Contact Picker",
+      "status": "fail",
+      "diagnosis": "threw",
+      "ms": 11,
+      "detail": "Unable to open a contact selector"
+    },
+    "web.identity.webauthnSupport": {
+      "title": "WebAuthn availability",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 0,
+      "detail": "PublicKeyCredential is absent — no WebAuthn."
+    },
+    "web.identity.credentialManagement": {
+      "title": "Credential Management",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 0,
+      "detail": "Present."
+    },
+    "web.identity.paymentRequest": {
+      "title": "Payment Request — canMakePayment",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 0,
+      "detail": "PaymentRequest is absent."
+    },
+    "web.identity.paymentHandler": {
+      "title": "Payment Handler",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 0,
+      "detail": "Not present in this runtime."
+    },
+    "web.identity.fedcm": {
+      "title": "FedCM",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 0,
+      "detail": "Not present in this runtime."
+    },
+    "web.identity.digitalCredentials": {
+      "title": "Digital Credentials API",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 0,
+      "detail": "Not present in this runtime."
+    },
+    "web.identity.webauthnCreate": {
+      "title": "WebAuthn — create a credential",
+      "status": "skip",
+      "diagnosis": null,
+      "ms": null,
+      "detail": "Needs \"web.identity.webauthnSupport\", which came back unsupported. Running anyway would test a placeholder."
+    },
+    "web.connectivity.bluetooth": {
+      "title": "Web Bluetooth — device picker",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 1,
+      "detail": "navigator.bluetooth is absent."
+    },
+    "web.connectivity.usb": {
+      "title": "WebUSB — device picker",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 1,
+      "detail": "navigator.usb is absent."
+    },
+    "web.connectivity.hid": {
+      "title": "WebHID — device picker",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 1,
+      "detail": "navigator.hid is absent."
+    },
+    "web.connectivity.serial": {
+      "title": "Web Serial — port picker",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 1,
+      "detail": "navigator.serial is absent — expected on mobile."
+    },
+    "web.connectivity.nfcRead": {
+      "title": "Web NFC — scan",
+      "status": "blocked",
+      "diagnosis": "os-denied",
+      "ms": 13,
+      "detail": "Failed to execute 'scan' on 'NDEFReader': NFC permission request denied."
+    },
+    "web.connectivity.nfcWrite": {
+      "title": "Web NFC — write",
+      "status": "skip",
+      "diagnosis": null,
+      "ms": null,
+      "detail": "Needs \"web.connectivity.nfcRead\", which came back blocked. Running anyway would test a placeholder."
+    },
+    "web.graphics.canvas2d": {
+      "title": "Canvas 2D + readback",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 1,
+      "detail": "Pixels read back exactly, and export works."
+    },
+    "web.graphics.imageFormats": {
+      "title": "Image format decoding",
+      "status": "unsupported",
+      "diagnosis": "not-implemented",
+      "ms": 7,
+      "detail": "Modern format(s) unavailable: avif. Images using them render blank with no error."
+    },
+    "web.graphics.webAudio": {
+      "title": "Web Audio",
+      "status": "pass",
+      "diagnosis": null,
+      "ms": 0,
+      "detail": "Present."
+    },
+    "web.graphics.webgpu": {
+      "title": "WebGPU adapter + device",
+      "status": "blocked",
+      "diagnosis": "os-denied",
+      "ms": null,
+      "detail": "navigator.gpu exists but requestAdapter() returned null — no compatible adapter, or WebGPU is disabled by policy."
+    }
+  },
+  "totals": {
+    "pass": 81,
+    "fail": 7,
+    "timeout": 1,
+    "crashed": 0,
+    "blocked": 8,
+    "unsupported": 24,
+    "skip": 11
+  }
+}

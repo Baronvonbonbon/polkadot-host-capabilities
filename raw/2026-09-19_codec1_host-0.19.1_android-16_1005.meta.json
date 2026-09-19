@@ -1,0 +1,21 @@
+{
+  "productId": "sondeprobes",
+  "sdk": {
+    "@parity/product-sdk": "0.27.0",
+    "@parity/product-sdk-host": "0.19.1",
+    "@parity/product-sdk-keys": "0.3.24",
+    "@parity/product-sdk-statement-store": "0.6.9",
+    "@parity/product-sdk-terminal": "0.8.2",
+    "@parity/truapi": "0.13.1"
+  },
+  "notes": [
+    "SDK versions are sonde's exact pins at this build (its package.json); the markdown report does not carry them.",
+    "Picked file names are redacted.",
+    "navigateTo pointed at https://github.com/Baronvonbonbon/sonde. The host accepted it; whether the URL opened outside the product was not recorded."
+  ],
+  "retracted": {
+    "host.cloud.upload": "Not measured: sonde's spend gate refused it. The host resolved only Paseo Asset Hub's chain spec (0xd6eec261…), which sonde's allowlist did not hold. Fixed in sonde on 2026-09-19.",
+    "host.cloud.roundTrip": "Not measured: needs host.cloud.upload, which sonde's spend gate refused.",
+    "host.statement.submit": "Not measured: sonde's spend gate refused it (the resolved genesis was not in its allowlist). Fixed in sonde on 2026-09-19."
+  }
+}

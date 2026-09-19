@@ -15,11 +15,11 @@ No host API reports the Polkadot app's version. What decides whether a Product w
 - the **SDK** the Product was built with
 - the **OS**
 
-So every run is keyed by those, plus the date:
+So every run is keyed by those, plus the date and the time of capture (so that two runs on one day stay apart):
 
 ```
-2026-09-19_codec1_host-0.19.1_android-16
- date      codec  product-sdk-host  os-major
+2026-09-19_codec1_host-0.19.1_android-16_1005
+ date      codec  product-sdk-host  os-major   HHMM UTC
 ```
 
 If someone read the app version off the phone, it goes in `runtime.appVersion`.
