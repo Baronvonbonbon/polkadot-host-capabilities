@@ -33,6 +33,7 @@ Read this first:
 - [Chain access](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/chain-access.md): devnet chains and their genesis hashes, chain specs, the host RPC provider
 - [Notifications](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/notifications.md): host notifications, including scheduled ones with the app closed
 - [Storage on the device](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/local-storage.md): host local storage, and which web storage exists
+- [Gas and signing](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/gas-and-signing.md): PGAS, the testnet gas asset; the host's contract-gas allowance; whether signing needs a tap
 - [Payments](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/payments.md): the payment manager's balance never arrives yet
 - [App and system](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/app-and-system.md): detection, handshake, app version, navigateTo, theme, chat, new builds
 - [Files and sharing](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/files-and-sharing.md): picking works, downloads and share don't, clipboard write only
