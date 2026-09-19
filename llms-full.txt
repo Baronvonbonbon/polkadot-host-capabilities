@@ -69,7 +69,7 @@ Read this first:
 
 ---
 capability: The host container, the app, navigation and theme
-probes: [host.system.container, host.system.handshake, host.system.version, host.system.createApp, host.system.navigateTo, host.theme.subscribe, host.chat.list]
+probes: [host.system.container, host.system.handshake, host.system.version, host.system.createApp, host.system.navigateTo, host.theme.subscribe, host.chat.list, host.limits.bridgePayload, host.limits.concurrency, web.limits.backgrounding]
 ---
 
 # The host container, the app, navigation and theme
@@ -134,6 +134,9 @@ phone was set to light (almanac P12). Style against the host theme.
 | `host.system.navigateTo` navigateTo | pass | pass | pass | ~~skip~~ probe bug |
 | `host.theme.subscribe` Theme subscription | pass | pass | pass | pass |
 | `host.chat.list` Chat — list subscription | pass | pass | pass | pass |
+| `host.limits.bridgePayload`  | — | — | — | — |
+| `host.limits.concurrency`  | — | — | — | — |
+| `web.limits.backgrounding`  | — | — | — | — |
 
 Latest detail per probe:
 
@@ -151,7 +154,7 @@ Latest detail per probe:
 
 ---
 capability: Bulletin storage (uploads and reads through the host)
-probes: [host.cloud.allowance, host.preimage.submit, host.cloud.upload, host.cloud.roundTrip, host.cloud.read, host.preimage.lookup, host.cloud.seal]
+probes: [host.cloud.allowance, host.preimage.submit, host.cloud.upload, host.cloud.roundTrip, host.cloud.read, host.preimage.lookup, host.cloud.seal, host.limits.retention, host.limits.preimageSize, host.limits.bulletinQuota]
 ---
 
 # Bulletin storage
@@ -240,6 +243,9 @@ from a desktop (`npm run retention` in almanac). The first 15-day checks fall on
 | `host.cloud.read` Cloud storage read (no signature needed) | pass | pass | pass | ~~fail · threw~~ probe bug |
 | `host.preimage.lookup` Preimage lookup (read-only) | fail · wrong-result | fail · wrong-result | fail · wrong-result | fail · wrong-result |
 | `host.cloud.seal` Seal under a crypto-shred key (WebCrypto) | pass | pass | pass | pass |
+| `host.limits.retention`  | — | — | — | — |
+| `host.limits.preimageSize`  | — | — | — | — |
+| `host.limits.bulletinQuota`  | — | — | — | — |
 
 Latest detail per probe:
 
@@ -351,7 +357,7 @@ Latest detail per probe:
 
 ---
 capability: Compute, crypto and workers
-probes: [web.compute.wasm, web.compute.wasmFeatures, web.compute.subtleCrypto, web.compute.structuredClone, web.compute.worker, web.compute.sharedWorker, web.compute.sharedArrayBuffer, web.platform.timerResolution, web.platform.memory, web.platform.scheduler, web.platform.locks]
+probes: [web.compute.wasm, web.compute.wasmFeatures, web.compute.subtleCrypto, web.compute.structuredClone, web.compute.worker, web.compute.sharedWorker, web.compute.sharedArrayBuffer, web.platform.timerResolution, web.platform.memory, web.platform.scheduler, web.platform.locks, web.limits.groth16, web.limits.wasmMemory, web.limits.memoryCeiling]
 ---
 
 # Compute, crypto and workers
@@ -398,6 +404,9 @@ Groth16 proof for delivery proximity. Its proving time on a phone isn't in this 
 | `web.platform.memory` Memory measurement | pass | pass | pass | pass |
 | `web.platform.scheduler` Prioritised task scheduling | pass | pass | pass | pass |
 | `web.platform.locks` Web Locks | pass | pass | pass | pass |
+| `web.limits.groth16`  | — | — | — | — |
+| `web.limits.wasmMemory`  | — | — | — | — |
+| `web.limits.memoryCeiling`  | — | — | — | — |
 
 Latest detail per probe:
 
@@ -419,7 +428,7 @@ Latest detail per probe:
 
 ---
 capability: Files, sharing and the clipboard
-probes: [web.filesystem.blob, web.filesystem.fileInput, web.filesystem.showOpenFilePicker, web.filesystem.showSaveFilePicker, web.filesystem.showDirectoryPicker, web.ux.share, web.ux.shareFiles, web.ux.clipboardWrite, web.ux.clipboardRead]
+probes: [web.filesystem.blob, web.filesystem.fileInput, web.filesystem.showOpenFilePicker, web.filesystem.showSaveFilePicker, web.filesystem.showDirectoryPicker, web.ux.share, web.ux.shareFiles, web.ux.clipboardWrite, web.ux.clipboardRead, web.limits.clipboardSize]
 ---
 
 # Files, sharing and the clipboard
@@ -463,6 +472,7 @@ clipboard works; reading from it is blocked.
 | `web.ux.shareFiles` Web Share — files | skip | skip | skip | skip |
 | `web.ux.clipboardWrite` Clipboard write | pass | pass | pass | pass |
 | `web.ux.clipboardRead` Clipboard read | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied |
+| `web.limits.clipboardSize`  | — | — | — | — |
 
 Latest detail per probe:
 
@@ -580,7 +590,7 @@ Latest detail per probe:
 
 ---
 capability: Storage on the device
-probes: [host.localStorage.roundTrip, web.storage.webStorage, web.storage.indexedDb, web.storage.cacheStorage, web.storage.quota, web.storage.cookies, web.storage.storageAccessApi, web.filesystem.opfs]
+probes: [host.localStorage.roundTrip, web.storage.webStorage, web.storage.indexedDb, web.storage.cacheStorage, web.storage.quota, web.storage.cookies, web.storage.storageAccessApi, web.filesystem.opfs, host.limits.localStorageCeiling]
 ---
 
 # Storage on the device
@@ -637,6 +647,7 @@ SDKs' session stores) fail inside the app. Give them a host-storage adapter.
 | `web.storage.cookies` Cookies + Cookie Store API | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder |
 | `web.storage.storageAccessApi` Storage Access API | pass | pass | pass | pass |
 | `web.filesystem.opfs` Origin Private File System | pass | pass | pass | pass |
+| `host.limits.localStorageCeiling`  | — | — | — | — |
 
 Latest detail per probe:
 
@@ -792,7 +803,7 @@ Latest detail per probe:
 
 ---
 capability: Camera, microphone, media and peer connections
-probes: [web.media.enumerateDevices, web.media.camera, web.media.microphone, web.media.imageCapture, web.media.mediaRecorder, web.media.displayMedia, web.media.pictureInPicture, web.graphics.webAudio, web.graphics.webrtc, web.graphics.webCodecs]
+probes: [web.media.enumerateDevices, web.media.camera, web.media.microphone, web.media.imageCapture, web.media.mediaRecorder, web.media.displayMedia, web.media.pictureInPicture, web.graphics.webAudio, web.graphics.webrtc, web.graphics.webCodecs, web.media.barcodeDetector, web.limits.webrtcLoopback]
 ---
 
 # Camera, microphone, media and peer connections
@@ -838,6 +849,8 @@ statement per side, replaced in place. See [statement-store.md](statement-store.
 | `web.graphics.webAudio` Web Audio | pass | pass | pass | pass |
 | `web.graphics.webrtc` WebRTC peer connection | pass | — | pass | — |
 | `web.graphics.webCodecs` WebCodecs configuration support | pass | pass | pass | — |
+| `web.media.barcodeDetector`  | — | — | — | — |
+| `web.limits.webrtcLoopback`  | — | — | — | — |
 
 Latest detail per probe:
 
@@ -914,7 +927,7 @@ Latest detail per probe:
 
 ---
 capability: Notifications and background reach
-probes: [host.permissions.notifications, host.notifications.push, web.ux.notifications, web.ux.push, web.compute.serviceWorker, web.ux.badging]
+probes: [host.permissions.notifications, host.notifications.push, web.ux.notifications, web.ux.push, web.compute.serviceWorker, web.ux.badging, host.limits.notifications]
 ---
 
 # Notifications
@@ -958,6 +971,7 @@ await n!.cancel(id);
 | `web.ux.push` Push API | fail · not-implemented | fail · not-implemented | fail · not-implemented | fail · not-implemented |
 | `web.compute.serviceWorker` Service Worker registration | fail · threw | fail · threw | fail · threw | fail · threw |
 | `web.ux.badging` App Badging | pass | pass | pass | pass |
+| `host.limits.notifications`  | — | — | — | — |
 
 Latest detail per probe:
 
@@ -1195,7 +1209,7 @@ Latest detail per probe:
 
 ---
 capability: Statement Store (small signed messages between phones)
-probes: [host.statement.subscribe, host.statement.createProof, host.statement.submit]
+probes: [host.statement.subscribe, host.statement.createProof, host.statement.submit, host.limits.statementSize, host.limits.statementLatency, host.limits.statementExpiry, host.limits.statementCapacity]
 ---
 
 # Statement Store
@@ -1273,6 +1287,10 @@ almanac's working version is `app/src/platform/polkadot.ts` (`statementPort`).
 | `host.statement.subscribe` Statement Store — subscribe (read-only) | pass | pass | pass | pass |
 | `host.statement.createProof` Statement Store — createProofAuthorized | pass | pass | pass | pass |
 | `host.statement.submit` Statement Store — submit | pass | ~~skip · spend-refused-by-allowlist~~ probe bug | ~~skip · spend-refused-by-allowlist~~ probe bug | ~~skip · spend-refused-by-allowlist~~ probe bug |
+| `host.limits.statementSize`  | — | — | — | — |
+| `host.limits.statementLatency`  | — | — | — | — |
+| `host.limits.statementExpiry`  | — | — | — | — |
+| `host.limits.statementCapacity`  | — | — | — | — |
 
 Latest detail per probe:
 

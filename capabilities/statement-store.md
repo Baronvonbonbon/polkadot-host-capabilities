@@ -1,6 +1,6 @@
 ---
 capability: Statement Store (small signed messages between phones)
-probes: [host.statement.subscribe, host.statement.createProof, host.statement.submit]
+probes: [host.statement.subscribe, host.statement.createProof, host.statement.submit, host.limits.statementSize, host.limits.statementLatency, host.limits.statementExpiry, host.limits.statementCapacity]
 ---
 
 # Statement Store
@@ -78,6 +78,10 @@ almanac's working version is `app/src/platform/polkadot.ts` (`statementPort`).
 | `host.statement.subscribe` Statement Store — subscribe (read-only) | pass | pass | pass | pass |
 | `host.statement.createProof` Statement Store — createProofAuthorized | pass | pass | pass | pass |
 | `host.statement.submit` Statement Store — submit | pass | ~~skip · spend-refused-by-allowlist~~ probe bug | ~~skip · spend-refused-by-allowlist~~ probe bug | ~~skip · spend-refused-by-allowlist~~ probe bug |
+| `host.limits.statementSize`  | — | — | — | — |
+| `host.limits.statementLatency`  | — | — | — | — |
+| `host.limits.statementExpiry`  | — | — | — | — |
+| `host.limits.statementCapacity`  | — | — | — | — |
 
 Latest detail per probe:
 

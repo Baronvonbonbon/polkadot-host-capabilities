@@ -1,6 +1,6 @@
 ---
 capability: Files, sharing and the clipboard
-probes: [web.filesystem.blob, web.filesystem.fileInput, web.filesystem.showOpenFilePicker, web.filesystem.showSaveFilePicker, web.filesystem.showDirectoryPicker, web.ux.share, web.ux.shareFiles, web.ux.clipboardWrite, web.ux.clipboardRead]
+probes: [web.filesystem.blob, web.filesystem.fileInput, web.filesystem.showOpenFilePicker, web.filesystem.showSaveFilePicker, web.filesystem.showDirectoryPicker, web.ux.share, web.ux.shareFiles, web.ux.clipboardWrite, web.ux.clipboardRead, web.limits.clipboardSize]
 ---
 
 # Files, sharing and the clipboard
@@ -44,6 +44,7 @@ clipboard works; reading from it is blocked.
 | `web.ux.shareFiles` Web Share — files | skip | skip | skip | skip |
 | `web.ux.clipboardWrite` Clipboard write | pass | pass | pass | pass |
 | `web.ux.clipboardRead` Clipboard read | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied |
+| `web.limits.clipboardSize`  | — | — | — | — |
 
 Latest detail per probe:
 

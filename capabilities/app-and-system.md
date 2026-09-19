@@ -1,6 +1,6 @@
 ---
 capability: The host container, the app, navigation and theme
-probes: [host.system.container, host.system.handshake, host.system.version, host.system.createApp, host.system.navigateTo, host.theme.subscribe, host.chat.list]
+probes: [host.system.container, host.system.handshake, host.system.version, host.system.createApp, host.system.navigateTo, host.theme.subscribe, host.chat.list, host.limits.bridgePayload, host.limits.concurrency, web.limits.backgrounding]
 ---
 
 # The host container, the app, navigation and theme
@@ -65,6 +65,9 @@ phone was set to light (almanac P12). Style against the host theme.
 | `host.system.navigateTo` navigateTo | pass | pass | pass | ~~skip~~ probe bug |
 | `host.theme.subscribe` Theme subscription | pass | pass | pass | pass |
 | `host.chat.list` Chat — list subscription | pass | pass | pass | pass |
+| `host.limits.bridgePayload`  | — | — | — | — |
+| `host.limits.concurrency`  | — | — | — | — |
+| `web.limits.backgrounding`  | — | — | — | — |
 
 Latest detail per probe:
 

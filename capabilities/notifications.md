@@ -1,6 +1,6 @@
 ---
 capability: Notifications and background reach
-probes: [host.permissions.notifications, host.notifications.push, web.ux.notifications, web.ux.push, web.compute.serviceWorker, web.ux.badging]
+probes: [host.permissions.notifications, host.notifications.push, web.ux.notifications, web.ux.push, web.compute.serviceWorker, web.ux.badging, host.limits.notifications]
 ---
 
 # Notifications
@@ -44,6 +44,7 @@ await n!.cancel(id);
 | `web.ux.push` Push API | fail · not-implemented | fail · not-implemented | fail · not-implemented | fail · not-implemented |
 | `web.compute.serviceWorker` Service Worker registration | fail · threw | fail · threw | fail · threw | fail · threw |
 | `web.ux.badging` App Badging | pass | pass | pass | pass |
+| `host.limits.notifications`  | — | — | — | — |
 
 Latest detail per probe:
 

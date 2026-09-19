@@ -1,6 +1,6 @@
 ---
 capability: Bulletin storage (uploads and reads through the host)
-probes: [host.cloud.allowance, host.preimage.submit, host.cloud.upload, host.cloud.roundTrip, host.cloud.read, host.preimage.lookup, host.cloud.seal]
+probes: [host.cloud.allowance, host.preimage.submit, host.cloud.upload, host.cloud.roundTrip, host.cloud.read, host.preimage.lookup, host.cloud.seal, host.limits.retention, host.limits.preimageSize, host.limits.bulletinQuota]
 ---
 
 # Bulletin storage
@@ -89,6 +89,9 @@ from a desktop (`npm run retention` in almanac). The first 15-day checks fall on
 | `host.cloud.read` Cloud storage read (no signature needed) | pass | pass | pass | ~~fail · threw~~ probe bug |
 | `host.preimage.lookup` Preimage lookup (read-only) | fail · wrong-result | fail · wrong-result | fail · wrong-result | fail · wrong-result |
 | `host.cloud.seal` Seal under a crypto-shred key (WebCrypto) | pass | pass | pass | pass |
+| `host.limits.retention`  | — | — | — | — |
+| `host.limits.preimageSize`  | — | — | — | — |
+| `host.limits.bulletinQuota`  | — | — | — | — |
 
 Latest detail per probe:
 

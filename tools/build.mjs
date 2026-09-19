@@ -86,7 +86,8 @@ const groupOf = (id) => id.split(".").slice(0, 2).join(".");
 const cell = (r) => {
   if (!r) return "—";
   const text = `${r.status}${r.diagnosis ? ` · ${r.diagnosis}` : ""}`;
-  return r.retracted ? `~~${text}~~ probe bug` : text;
+  const m = r.measures ? Object.entries(r.measures).filter(([, v]) => typeof v === "number").slice(0, 3).map(([k, v]) => `${k} ${v}`).join(", ") : "";
+  return r.retracted ? `~~${text}~~ probe bug` : m ? `${text} (${m})` : text;
 };
 const esc = (s) => String(s).replace(/\|/g, "\\|").replace(/\n/g, " ");
 const runHead = (run) => `[${run.key}](runs/${run.key}.json)${run.complete ? "" : " (partial)"}`;
@@ -117,7 +118,7 @@ for (const file of list("capabilities", ".md")) {
     .map((id) => {
       const r = shown.find((run) => run.results[id])?.results[id];
       if (!r) return null;
-      return `- \`${id}\` — ${r.retracted ? `**Retracted, a probe bug:** ${r.retracted} The run said: ` : ""}${r.detail ?? ""}${r.evidence ? `\n\n  \`\`\`\n${r.evidence.replace(/^/gm, "  ")}\n  \`\`\`` : ""}`;
+      return `- \`${id}\` — ${r.retracted ? `**Retracted, a probe bug:** ${r.retracted} The run said: ` : ""}${r.detail ?? ""}${r.measures ? ` — measures: ${Object.entries(r.measures).map(([k, v]) => `\`${k}=${v}\``).join(" ")}` : ""}${r.evidence ? `\n\n  \`\`\`\n${r.evidence.replace(/^/gm, "  ")}\n  \`\`\`` : ""}`;
     })
     .filter(Boolean)
     .join("\n");

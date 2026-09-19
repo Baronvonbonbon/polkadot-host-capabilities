@@ -65,9 +65,14 @@ for (const part of attention.split(/^### /m).slice(1)) {
 const results = {};
 const unknownTitles = [];
 const everything = md.split(/^## Everything/m)[1] ?? "";
-const row = /^- `\[.\]` \*\*(.+?)\*\* — (\w+)(?: \((\d+) ms\))?(?: · `([^`]+)`)?\n {2}(.+)$/gm;
+const row = /^- `\[.\]` \*\*(.+?)\*\* — (\w+)(?: \((\d+) ms\))?(?: · `([^`]+)`)?\n {2}(.+)(?:\n {2}measures: (.+))?$/gm;
+// `k=v` pairs as the report prints them; numbers and booleans come back typed.
+const measuresOf = (line) =>
+  Object.fromEntries(
+    [...line.matchAll(/`([^=`]+)=([^`]*)`/g)].map(([, k, v]) => [k, v === "true" ? true : v === "false" ? false : v !== "" && !Number.isNaN(Number(v)) ? Number(v) : v]),
+  );
 for (const m of everything.matchAll(row)) {
-  const [, title, status, ms, diagnosis, detail] = m;
+  const [, title, status, ms, diagnosis, detail, measureLine] = m;
   const id = titles[title];
   if (!id) {
     unknownTitles.push(title);
@@ -80,6 +85,7 @@ for (const m of everything.matchAll(row)) {
     ms: ms === undefined ? null : Number(ms),
     detail,
     ...(evidence[id] ? { evidence: evidence[id] } : {}),
+    ...(measureLine ? { measures: measuresOf(measureLine) } : {}),
   };
 }
 // A result that only survived in "Needs attention" (the copy was cut off before its row).

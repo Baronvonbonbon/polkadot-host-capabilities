@@ -1,6 +1,6 @@
 ---
 capability: Camera, microphone, media and peer connections
-probes: [web.media.enumerateDevices, web.media.camera, web.media.microphone, web.media.imageCapture, web.media.mediaRecorder, web.media.displayMedia, web.media.pictureInPicture, web.graphics.webAudio, web.graphics.webrtc, web.graphics.webCodecs]
+probes: [web.media.enumerateDevices, web.media.camera, web.media.microphone, web.media.imageCapture, web.media.mediaRecorder, web.media.displayMedia, web.media.pictureInPicture, web.graphics.webAudio, web.graphics.webrtc, web.graphics.webCodecs, web.media.barcodeDetector, web.limits.webrtcLoopback]
 ---
 
 # Camera, microphone, media and peer connections
@@ -46,6 +46,8 @@ statement per side, replaced in place. See [statement-store.md](statement-store.
 | `web.graphics.webAudio` Web Audio | pass | pass | pass | pass |
 | `web.graphics.webrtc` WebRTC peer connection | pass | — | pass | — |
 | `web.graphics.webCodecs` WebCodecs configuration support | pass | pass | pass | — |
+| `web.media.barcodeDetector`  | — | — | — | — |
+| `web.limits.webrtcLoopback`  | — | — | — | — |
 
 Latest detail per probe:
 

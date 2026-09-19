@@ -1,6 +1,6 @@
 ---
 capability: Storage on the device
-probes: [host.localStorage.roundTrip, web.storage.webStorage, web.storage.indexedDb, web.storage.cacheStorage, web.storage.quota, web.storage.cookies, web.storage.storageAccessApi, web.filesystem.opfs]
+probes: [host.localStorage.roundTrip, web.storage.webStorage, web.storage.indexedDb, web.storage.cacheStorage, web.storage.quota, web.storage.cookies, web.storage.storageAccessApi, web.filesystem.opfs, host.limits.localStorageCeiling]
 ---
 
 # Storage on the device
@@ -57,6 +57,7 @@ SDKs' session stores) fail inside the app. Give them a host-storage adapter.
 | `web.storage.cookies` Cookies + Cookie Store API | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder |
 | `web.storage.storageAccessApi` Storage Access API | pass | pass | pass | pass |
 | `web.filesystem.opfs` Origin Private File System | pass | pass | pass | pass |
+| `host.limits.localStorageCeiling`  | — | — | — | — |
 
 Latest detail per probe:
 

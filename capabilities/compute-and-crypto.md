@@ -1,6 +1,6 @@
 ---
 capability: Compute, crypto and workers
-probes: [web.compute.wasm, web.compute.wasmFeatures, web.compute.subtleCrypto, web.compute.structuredClone, web.compute.worker, web.compute.sharedWorker, web.compute.sharedArrayBuffer, web.platform.timerResolution, web.platform.memory, web.platform.scheduler, web.platform.locks]
+probes: [web.compute.wasm, web.compute.wasmFeatures, web.compute.subtleCrypto, web.compute.structuredClone, web.compute.worker, web.compute.sharedWorker, web.compute.sharedArrayBuffer, web.platform.timerResolution, web.platform.memory, web.platform.scheduler, web.platform.locks, web.limits.groth16, web.limits.wasmMemory, web.limits.memoryCeiling]
 ---
 
 # Compute, crypto and workers
@@ -47,6 +47,9 @@ Groth16 proof for delivery proximity. Its proving time on a phone isn't in this 
 | `web.platform.memory` Memory measurement | pass | pass | pass | pass |
 | `web.platform.scheduler` Prioritised task scheduling | pass | pass | pass | pass |
 | `web.platform.locks` Web Locks | pass | pass | pass | pass |
+| `web.limits.groth16`  | — | — | — | — |
+| `web.limits.wasmMemory`  | — | — | — | — |
+| `web.limits.memoryCeiling`  | — | — | — | — |
 
 Latest detail per probe:
 
