@@ -1,0 +1,1862 @@
+<<< llms.txt >>>
+
+# Polkadot host capabilities
+
+> What a Product (a web app running inside the Polkadot app) can and cannot do. Each answer is
+> measured from inside the app on a real phone, with working code for each capability. Results are
+> keyed by date, TrUAPI wire codec, product-sdk-host version and OS, because no host API reports
+> the app's version. Everything here is dated: re-check against the newest run before relying on a
+> "not available".
+
+Read this first:
+
+- Build your SDK against the wire codec the app speaks. As of 2026-09-19 the Android app answers
+  codec 1 only: pin @parity/product-sdk-host 0.19.1 and @parity/truapi 0.13.1 exactly. On a mismatch
+  every host call hangs.
+- Give every host call a deadline. Many never settle when they can't do what was asked.
+- Location is not available to a Product (the host grants it, and the WebView still refuses).
+  Design flows that need no GPS.
+- Store on Bulletin with getPreimageManager().submit(), not cloudStorage.upload (Invalid: Payment).
+  Data is public by BLAKE2b-256 hash and lasts about two weeks.
+- The Statement Store holds 512 bytes per statement and about 1 KiB per account. Use it to
+  rendezvous; it reaches other phones.
+- Nothing leaves the app as a file. Export by copying text.
+- IndexedDB, CacheStorage, service workers, web push and Notification are absent. Use host local
+  storage and host notifications.
+- Publish with a local deploy key, not the phone's signer.
+
+## Capabilities
+
+- [Location](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/location.md): not available; how to detect it, and a design that settles without GPS
+- [Bulletin storage](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/bulletin-storage.md): uploads through the host, costs, sizes, retention, lookups
+- [Statement Store](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/statement-store.md): signed 512-byte messages between phones; limits and code
+- [Permissions](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/permissions.md): host permissions and web permissions, and why a host grant doesn't open the web API
+- [Identity and accounts](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/identity-and-accounts.md): product accounts, deterministic entropy, signing, EIP-712
+- [Chain access](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/chain-access.md): devnet chains and their genesis hashes, chain specs, the host RPC provider
+- [Notifications](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/notifications.md): host notifications, including scheduled ones with the app closed
+- [Storage on the device](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/local-storage.md): host local storage, and which web storage exists
+- [Payments](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/payments.md): the payment manager's balance never arrives yet
+- [App and system](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/app-and-system.md): detection, handshake, app version, navigateTo, theme, chat, new builds
+- [Files and sharing](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/files-and-sharing.md): picking works, downloads and share don't, clipboard write only
+- [Media and calls](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/media-and-calls.md): camera, microphone, QR codes, WebRTC status
+- [Compute and crypto](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/compute-and-crypto.md): WASM, WebCrypto, workers, no SharedArrayBuffer; timings on a phone
+- [Network](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/network.md): fetch, WebSocket, sendBeacon refused, the devnet IPFS gateway
+- [Sensors and hardware](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/sensors-and-hardware.md): motion sensors work; Bluetooth, USB, NFC don't
+- [UI and display](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/ui-and-display.md): no fullscreen, no AVIF, wake lock works
+
+## Pitfalls
+
+- [Wire codec](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/pitfalls/wire-codec.md): the exact SDK pins that work with the current app
+- [Host calls can hang](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/pitfalls/host-calls-can-hang.md): which calls go silent, and the deadlines to use
+- [SDK gotchas](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/pitfalls/sdk-gotchas.md): two Result conventions, the BulletinAllowance spelling, createApp's environment
+- [Deploy with a key](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/pitfalls/deploy-with-a-key.md): why phone-signed .dot names get stranded, and the fix
+- [DotNS registrar moved](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/pitfalls/dotns-registrar-moved.md): current devnet DotNS contract addresses
+
+## Data
+
+- [Matrix](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/matrix.md): every probe in every run
+- [Run schema](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/schema/run.v1.schema.json): the format of runs/*.json
+- [Runs](https://github.com/Baronvonbonbon/polkadot-host-capabilities/tree/main/runs): one JSON file per measured run
+
+## Optional
+
+- [Everything in one file](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/llms-full.txt)
+- [sonde](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/sources/sonde.md): the in-app prober, and how to add a run
+- [almanac's probe](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/sources/almanac-probe.md): P1–P14, measured 2026-09-13 to 17
+- [FARE](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/sources/fare.md): GPS-free settlement, Statement Store signalling, Bulletin as evidence
+
+<<< capabilities/app-and-system.md >>>
+
+---
+capability: The host container, the app, navigation and theme
+probes: [host.system.container, host.system.handshake, host.system.version, host.system.createApp, host.system.navigateTo, host.theme.subscribe, host.chat.list]
+---
+
+# The host container, the app, navigation and theme
+
+**Status (2026-09-19, codec 1, Android):** detection, the handshake, `createApp`, theme and chat
+work. No host API tells you the app's version. `navigateTo` is not measured yet.
+
+## Detect the host, then handshake
+
+```ts
+import { isInsideContainer } from "@parity/product-sdk-host";
+// Outside the app nobody answers this message round-trip, so it needs a deadline.
+const inHost = await Promise.race([isInsideContainer(), new Promise<boolean>((r) => setTimeout(() => r(false), 1500))]);
+```
+
+The handshake is where a **wire codec mismatch** shows up: every host call after it hangs. Pin the
+SDK to the codec the app speaks ([pitfalls/wire-codec.md](../pitfalls/wire-codec.md)).
+
+## Which app build am I on?
+
+**You can't tell.** No truapi namespace has a version call (`system` offers `handshake`,
+`featureSupported` and `navigateTo`). The user agent's Chromium version is the Android **system
+WebView**, updated through the Play Store separately from the Polkadot app, so it doesn't identify
+the app either. This repository keys runs by date, wire codec, SDK and OS instead. If you can read
+the version off the phone (Settings → About), put it in `runtime.appVersion`.
+
+## Getting a new build onto the phone
+
+Close the product, then **close the Polkadot app itself**, then open the product again. Closing only
+the product kept showing the previous build (almanac). Show a build id in your footer so you can
+tell which build is running.
+
+## navigateTo
+
+`navigateTo(url)` asks the host to open a URL, gated by the `OpenUrl` device permission. **Don't
+pass your own page's URL.** An honoured navigation to it reloads the product, which the 2026-09-19
+run mistook for a bug until the probe was read. sonde now passes an outside URL. The result for
+that is not measured yet.
+
+## Theme
+
+`getThemeProvider().subscribeTheme(cb)` delivers the current theme at once and then any changes.
+**It follows the host's theme, not the phone's.** almanac saw the host dark (`berlinNight`) while the
+phone was set to light (almanac P12). Style against the host theme.
+
+## Chat
+
+`getChatManager().subscribeChatList(cb)` is reachable, and 0 rooms were visible to a new product.
+`registerRoom` and `registerBot` create lasting state on the host side and have not been probed.
+
+## Measured
+
+<!-- measured:start — generated by tools/build.mjs from runs/; edits here are overwritten -->
+
+| Probe | [2026-09-19_codec1_host-0.19.1_android-16](runs/2026-09-19_codec1_host-0.19.1_android-16.json) (partial) |
+|---|---|
+| `host.system.container` Host container detection | pass |
+| `host.system.handshake` TrUApi handshake | pass |
+| `host.system.version` App version — is one exposed at all? | unsupported · not-implemented |
+| `host.system.createApp` createApp — construct the SDK App | pass |
+| `host.system.navigateTo` navigateTo | ~~skip~~ probe bug |
+| `host.theme.subscribe` Theme subscription | pass |
+| `host.chat.list` Chat — list subscription | pass |
+
+Latest detail per probe:
+
+- `host.system.container` — Running inside the Polkadot host container.
+- `host.system.handshake` — Handshake completed in 36 ms.
+- `host.system.version` — No host API returns an app version. Reports from different builds cannot be attributed to those builds, which is the single largest gap in making these results comparable.
+- `host.system.createApp` — App constructed on the configured environment.
+- `host.system.navigateTo` — **Retracted, a probe bug:** Skipped because sonde navigated to its own URL, and an honoured navigation to the page's own URL reloads it. That is the host doing what it was asked. Fixed in sonde on 2026-09-19: it opens an outside URL. The run said: Skipped by the operator.
+- `host.theme.subscribe` — Received 1 theme update(s).
+- `host.chat.list` — Chat namespace reachable; 0 room(s) visible.
+
+<!-- measured:end -->
+
+<<< capabilities/bulletin-storage.md >>>
+
+---
+capability: Bulletin storage (uploads and reads through the host)
+probes: [host.cloud.allowance, host.cloud.upload, host.cloud.roundTrip, host.cloud.read, host.preimage.lookup, host.cloud.seal]
+---
+
+# Bulletin storage
+
+**Status (2026-09-19, codec 1, Android): works through the host's preimage manager. It does not work
+through the SDK's `cloudStorage.upload`.** Data is public by content hash and lasts about two
+weeks.
+
+## Use it
+
+1. Request a `BulletinAllowance`. Spell it exactly that way, even though the type says otherwise.
+2. Request the `PreimageSubmit` permission.
+3. Upload with `getPreimageManager().submit(bytes)`. It returns a BLAKE2b-256 key.
+4. Read with `lookup(key, callback)`.
+
+```ts
+import { formatHostError, getPreimageManager, requestPermission, requestResourceAllocation } from "@parity/product-sdk-host";
+
+// The TypeScript type spells it "BulletInAllowance", and that spelling throws. Only this one allocates.
+await requestResourceAllocation([{ tag: "BulletinAllowance", value: undefined } as never]);
+const p = await requestPermission({ tag: "PreimageSubmit", value: undefined });
+if (!p.ok || !p.value) throw new Error(p.ok ? "user said no" : formatHostError(p.error));
+const manager = await getPreimageManager();            // null when the host offers no storage
+const key = await manager!.submit(bytes);              // hex BLAKE2b-256; give it a deadline (1 MiB took 41 s)
+
+// A lookup is a subscription that stays SILENT until the bytes arrive. There is no "not found".
+function get(key: `0x${string}`, ms = 30_000): Promise<Uint8Array | null> {
+  return new Promise((resolve) => {
+    const sub = manager!.lookup(key, (b) => { if (b) { clearTimeout(t); sub.unsubscribe(); resolve(b); } });
+    const t = setTimeout(() => { sub.unsubscribe(); resolve(null); }, ms);
+  });
+}
+```
+
+## Who pays, and how much fits
+
+- **The payer is a slot account the host keeps the key for.** No Product API names it. The
+  allowance reaches it by XCM from the People chain. Each claim is **10 transactions and 4 MiB**,
+  and it expires about 14 days (201,600 blocks) after it lands. The account holds no balance, so
+  this is quota, never a fee. (almanac P6b)
+- **One upload is one transaction, charged at exactly its own size.** 16 KiB took 6.7 s, 64 KiB
+  10.0 s, 256 KiB 16.8 s and **1 MiB 41.4 s** on a Pixel 10 Pro XL. Each came back byte for byte.
+  (almanac P6c)
+- **Allowances and slot accounts are per product id**, meaning the `.dot` label. Two names give two
+  separate quotas.
+
+## Don't
+
+- **Don't use `app.cloudStorage.upload`.** It signs with product account #0, which holds no Bulletin
+  authorization, so every upload is refused with `Invalid: Payment`, even right after `Allocated`.
+  (almanac P6, read on chain with a positive control)
+- **Don't expect SHA-256 CIDs to come back through the host.** The host's lookup takes a bare
+  32-byte digest and finds BLAKE2b-256 content only. A `bafkrei…` or `bafybei…` CID, like the ones
+  `pad` makes for a site bundle, waits out the SDK's 30 s timeout instead of failing. The devnet
+  IPFS gateway serves both kinds. (almanac P7)
+- **Don't treat silence as "not found".** A lookup of absent content never calls back. Always race
+  it against a timer.
+- **Don't store anything readable.** Anyone can fetch it by hash. Encrypt first; WebCrypto
+  AES-GCM works (`host.cloud.seal`). Treat ciphertext as possibly permanent and plaintext
+  retention as possibly shorter than you hoped.
+
+## Retention
+
+Measured about two weeks, while the docs say content persists. almanac follows two fixture CIDs
+from a desktop (`npm run retention` in almanac). The first 15-day checks fall on 2026-09-28 and
+2026-09-29. Plan for expiry: FARE uses the ~14-day life as a dispute-evidence window
+([sources/fare.md](../sources/fare.md)).
+
+## Measured
+
+<!-- measured:start — generated by tools/build.mjs from runs/; edits here are overwritten -->
+
+| Probe | [2026-09-19_codec1_host-0.19.1_android-16](runs/2026-09-19_codec1_host-0.19.1_android-16.json) (partial) |
+|---|---|
+| `host.cloud.allowance` Request a Bulletin allowance | pass |
+| `host.cloud.upload` Cloud storage upload (canary, then payload) | ~~skip · spend-refused-by-allowlist~~ probe bug |
+| `host.cloud.roundTrip` Fetch → CID verify → decrypt | ~~skip~~ probe bug |
+| `host.cloud.read` Cloud storage read (no signature needed) | ~~fail · threw~~ probe bug |
+| `host.preimage.lookup` Preimage lookup (read-only) | fail · wrong-result |
+| `host.cloud.seal` Seal under a crypto-shred key (WebCrypto) | pass |
+
+Latest detail per probe:
+
+- `host.cloud.allowance` — Allocated, and the App was rebuilt so cloud storage picks up the slot account.
+- `host.cloud.upload` — **Retracted, a probe bug:** Not measured: refused because no genesis resolved (the host.chain.genesis probe bug) and, separately, sonde's spend allowlist was empty. Both fixed in sonde on 2026-09-19. The run said: No genesis hash resolved yet — run host.chain.genesis first. Spending on an unidentified chain is refused.
+- `host.cloud.roundTrip` — **Retracted, a probe bug:** Not measured: needs host.cloud.upload, which was not run. The run said: Needs "host.cloud.upload", which came back skip. Running anyway would test a placeholder.
+- `host.cloud.read` — **Retracted, a probe bug:** sonde read a SHA-256 (bafybei…) CID. The host's lookup finds BLAKE2b-256 content only (almanac P7, 2026-09-14), so the read could never succeed. Fixed in sonde on 2026-09-19: it reads a BLAKE2b-256 fixture. The run said: Read returned an error.
+
+  ```
+  cid                   : bafybeifnjwhgxxnsqw7x6lq2yb6jylfsmwhgr2nfdaemdzjuvybjusrzv4
+  error                 : {"isSdkError":true,"source":"cloud-storage","name":"CloudStorageLookupTimeoutError","cid":"bafybeifnjwhgxxnsqw7x6lq2yb6jylfsmwhgr2nfdaemdzjuvybjusrzv4","timeoutMs":30000}
+  ```
+- `host.preimage.lookup` — Lookup never called back in 5 s — neither a hit nor a miss.
+
+  ```
+  Calling code cannot distinguish 'still looking' from 'never will'.
+  ```
+- `host.cloud.seal` — Sealed a placeholder in 0 ms (run the camera probe first for a real payload).
+
+<!-- measured:end -->
+
+<<< capabilities/chain-access.md >>>
+
+---
+capability: Chain access (chain specs, JSON-RPC, direct WebSocket)
+probes: [host.system.featureSupported, host.chain.genesis, host.chain.provider, web.net.websocket]
+---
+
+# Chain access
+
+**Status (2026-09-19, codec 1, Android): mostly unmeasured through the host.** The probe that
+should have measured it asked for a chain that doesn't exist (see Measured). A direct WebSocket
+from the WebView works.
+
+## The chains a devnet host carries
+
+The Products devnet runs "Next" chains. A host build carries a fixed set of them. Each genesis
+below was read off its own RPC with `chain_getBlockHash(0)` on 2026-09-19:
+
+| Chain | Genesis | RPC |
+|---|---|---|
+| Paseo Asset Hub Next | `0x4349b00e54897e21196fd331015fc5be0f14e118beb0375ed2bb1793737bb57a` | `wss://paseo-asset-hub-next-rpc.polkadot.io` |
+| Paseo People Next | `0x4a2b5b737de1da59e209b0000a876ec2fa20035dc34fd292a848da32d255ad48` | `wss://paseo-people-next-system-rpc.polkadot.io` |
+| Paseo Bulletin Next | `0x8cfe6717dc4becfda2e13c488a1e2061ff2dfee96e7d031157f72d36716c0a22` | `wss://paseo-bulletin-next-rpc.polkadot.io` |
+| Paseo Asset Hub (public testnet) | `0xd6eec26135305a8ad257a20d003357284c8aa03d0bdb2b357ab0a22371e11ef2` | `wss://asset-hub-paseo-rpc.n.dwellir.com` |
+
+DotNS and FARE's contracts live on Paseo Asset Hub's EVM, `https://eth-rpc-testnet.polkadot.io/`,
+chain id 420420417.
+
+**`createApp`'s cloud storage environment must match the one you published under.** The SDK
+defaults to `"paseo"`. A devnet host doesn't carry that Bulletin chain, so `createApp` throws
+`Chain 0x8cfe6717… is not supported by the current host`, and everything that depends on storage
+fails after it.
+
+## Use it
+
+```ts
+import { getChainSpec, getHostProvider, isChainSupported } from "@parity/product-sdk-host";
+const supported = await isChainSupported(genesis);   // Result<boolean>
+const spec = await getChainSpec(genesis);            // Result<spec | null>; race it (see below)
+const provider = await getHostProvider(genesis);     // a JSON-RPC provider routed by the host
+```
+
+- **Race every chain call against a deadline.** Asked about a genesis it doesn't carry, the host
+  may never answer. It should say "not supported", and in the 2026-09-19 run it said nothing for
+  45 s. See [pitfalls/host-calls-can-hang.md](../pitfalls/host-calls-can-hang.md).
+- A direct `WebSocket` to a public RPC also works from inside the app. It connected to
+  `wss://rpc.polkadot.io`, and almanac P10 reached People-chain nodes offering `statement_*` and
+  Bulletin nodes. No content policy blocked it.
+
+## Measured
+
+<!-- measured:start — generated by tools/build.mjs from runs/; edits here are overwritten -->
+
+| Probe | [2026-09-19_codec1_host-0.19.1_android-16](runs/2026-09-19_codec1_host-0.19.1_android-16.json) (partial) |
+|---|---|
+| `host.system.featureSupported` featureSupported / isChainSupported | pass |
+| `host.chain.genesis` Chain spec — genesis, name, properties | ~~timeout · never-settled~~ probe bug |
+| `host.chain.provider` Host JSON-RPC provider | ~~skip~~ probe bug |
+| `web.net.websocket` WebSocket connect | pass |
+
+Latest detail per probe:
+
+- `host.system.featureSupported` — Queried the host's chain support.
+- `host.chain.genesis` — **Retracted, a probe bug:** sonde's host.chain.genesis asked first for a genesis hash that exists on no chain (it shared only its first seven hex digits with Paseo Asset Hub's), and the host never answered for it. Fixed in sonde on 2026-09-19: real hashes, each with its own deadline. The run said: Never settled after 45s. A call that neither resolves nor rejects is worse than one that fails.
+- `host.chain.provider` — **Retracted, a probe bug:** Not measured: skipped because host.chain.genesis failed, which was a probe bug. The run said: Needs "host.chain.genesis", which came back timeout. Running anyway would test a placeholder.
+- `web.net.websocket` — Connected to wss://rpc.polkadot.io.
+
+<!-- measured:end -->
+
+<<< capabilities/compute-and-crypto.md >>>
+
+---
+capability: Compute, crypto and workers
+probes: [web.compute.wasm, web.compute.wasmFeatures, web.compute.subtleCrypto, web.compute.structuredClone, web.compute.worker, web.compute.sharedWorker, web.compute.sharedArrayBuffer, web.platform.timerResolution, web.platform.memory, web.platform.scheduler, web.platform.locks]
+---
+
+# Compute, crypto and workers
+
+**Status (2026-09-19, codec 1, Android): fast and complete for a single thread.** There is no
+`SharedArrayBuffer`, because the page is not cross-origin isolated, so there are no WASM threads.
+
+- **WebAssembly** compiles and runs, with SIMD available, so crypto libraries take their fast path.
+- **`crypto.subtle`** supports every algorithm tested, **including Ed25519 and X25519**.
+- **Dedicated Workers** work, including one started from a blob URL. SharedWorker is absent.
+- **`SharedArrayBuffer` is not defined** (`crossOriginIsolated` is false). Multi-threaded WASM
+  builds (some zk provers, some argon2/scrypt builds) must fall back to single-threaded.
+- **Timer resolution:** `performance.now()` ticks at 0.1 ms.
+
+## Real numbers on a phone (Pixel 10 Pro XL, almanac P11)
+
+| Work | Time |
+|---|---|
+| scrypt r=8, N=2¹⁵ | 101 ms |
+| scrypt r=8, N=2¹⁶ | 169 ms |
+| scrypt r=8, N=2¹⁷ | 328 ms |
+| XChaCha20-Poly1305, 1 MiB | 24 ms encrypt, 8 ms decrypt |
+| BLAKE2b-256, 1 MiB | 18 ms |
+| AES-256-GCM, 3.2 KiB (FARE) | 1 ms |
+| secp256k1 EIP-712 sign + recover (FARE, sonde) | 2–3 ms |
+
+This is a flagship phone; expect roughly 2–3× slower on mid-range hardware. FARE also runs a real
+Groth16 proof for delivery proximity. Its proving time on a phone isn't in this repository yet.
+
+## Measured
+
+<!-- measured:start — generated by tools/build.mjs from runs/; edits here are overwritten -->
+
+| Probe | [2026-09-19_codec1_host-0.19.1_android-16](runs/2026-09-19_codec1_host-0.19.1_android-16.json) (partial) |
+|---|---|
+| `web.compute.wasm` WebAssembly compile + instantiate | pass |
+| `web.compute.wasmFeatures` WASM feature detection (SIMD, threads, exceptions, bulk memory) | pass |
+| `web.compute.subtleCrypto` crypto.subtle algorithm matrix | pass |
+| `web.compute.structuredClone` structuredClone type coverage | pass |
+| `web.compute.worker` Dedicated Worker round-trip | pass |
+| `web.compute.sharedWorker` SharedWorker | unsupported · not-implemented |
+| `web.compute.sharedArrayBuffer` SharedArrayBuffer + Atomics | unsupported · not-implemented |
+| `web.platform.timerResolution` performance.now() resolution | pass |
+| `web.platform.memory` Memory measurement | pass |
+| `web.platform.scheduler` Prioritised task scheduling | pass |
+| `web.platform.locks` Web Locks | pass |
+
+Latest detail per probe:
+
+- `web.compute.wasm` — Compiled, instantiated, and executed correctly (compile 0 ms, instantiate 0 ms).
+- `web.compute.wasmFeatures` — SIMD available — crypto libraries can take their fast path.
+- `web.compute.subtleCrypto` — Every algorithm tested works, including Ed25519 and X25519.
+- `web.compute.structuredClone` — All tested types clone.
+- `web.compute.worker` — Worker spawned from a blob URL, computed, and replied correctly.
+- `web.compute.sharedWorker` — Not present in this runtime.
+- `web.compute.sharedArrayBuffer` — SharedArrayBuffer is not defined at all.
+- `web.platform.timerResolution` — Smallest observable tick: 0.1000 ms.
+- `web.platform.memory` — Some memory reporting is available.
+- `web.platform.scheduler` — Present.
+- `web.platform.locks` — Acquired and released a named lock.
+
+<!-- measured:end -->
+
+<<< capabilities/files-and-sharing.md >>>
+
+---
+capability: Files, sharing and the clipboard
+probes: [web.filesystem.blob, web.filesystem.fileInput, web.filesystem.showOpenFilePicker, web.filesystem.showSaveFilePicker, web.filesystem.showDirectoryPicker, web.ux.share, web.ux.shareFiles, web.ux.clipboardWrite, web.ux.clipboardRead]
+---
+
+# Files, sharing and the clipboard
+
+**Status (2026-09-19, codec 1, Android): files come in; nothing leaves as a file.** Reading a
+picked file works. Downloads, file sharing, Web Share and print do nothing. Writing to the
+clipboard works; reading from it is blocked.
+
+| Path | Result |
+|---|---|
+| `<input type="file">` | works: a 4.5 MB PDF and a 1.5 MB PNG were read (almanac P4) |
+| `showOpenFilePicker()` | works |
+| `showSaveFilePicker()` / `showDirectoryPicker()` | rejected in 11 ms with "The user aborted a request". That is too fast for a person, so most likely no picker was shown. **Treat as unavailable** |
+| `<a download>`, blob or data links | **do nothing** (almanac P4) |
+| `navigator.share` (text, URL, files) | **absent** |
+| `window.print()` | does nothing (almanac P4) |
+| `navigator.clipboard.writeText` | works |
+| `navigator.clipboard.readText` | **blocked**: "Read permission denied", even after the host granted `Clipboard` |
+
+## What to do
+
+- **Export by copying text.** almanac copies backups and the visit summary as text, and shows the
+  text on screen in case the clipboard refuses.
+- **Import by picking a file, or by pasting into a text field.** Pasting through the keyboard's own
+  UI works where `readText()` doesn't.
+- **Exchange between two phones with QR codes.** `BarcodeDetector` is built in on Android, and the
+  camera works ([media-and-calls.md](media-and-calls.md)).
+
+## Measured
+
+<!-- measured:start — generated by tools/build.mjs from runs/; edits here are overwritten -->
+
+| Probe | [2026-09-19_codec1_host-0.19.1_android-16](runs/2026-09-19_codec1_host-0.19.1_android-16.json) (partial) |
+|---|---|
+| `web.filesystem.blob` Blob / File / object URL round-trip | pass |
+| `web.filesystem.fileInput` <input type=file> fallback | pass |
+| `web.filesystem.showOpenFilePicker` File System Access — open picker | pass |
+| `web.filesystem.showSaveFilePicker` File System Access — save picker | skip · user-dismissed |
+| `web.filesystem.showDirectoryPicker` File System Access — directory picker | skip · user-dismissed |
+| `web.ux.share` Web Share — text and URL | unsupported · not-implemented |
+| `web.ux.shareFiles` Web Share — files | skip |
+| `web.ux.clipboardWrite` Clipboard write | pass |
+| `web.ux.clipboardRead` Clipboard read | blocked · os-denied |
+
+Latest detail per probe:
+
+- `web.filesystem.blob` — arrayBuffer, object URL, and stream all return the full payload.
+- `web.filesystem.fileInput` — Received "<picked file>".
+- `web.filesystem.showOpenFilePicker` — Picked "<picked file>".
+- `web.filesystem.showSaveFilePicker` — Dismissed or aborted: Failed to execute 'showSaveFilePicker' on 'Window': The user aborted a request.
+- `web.filesystem.showDirectoryPicker` — Dismissed or aborted: Failed to execute 'showDirectoryPicker' on 'Window': The user aborted a request.
+- `web.ux.share` — navigator.share is not present in this runtime
+- `web.ux.shareFiles` — Needs "web.ux.share", which came back unsupported. Running anyway would test a placeholder.
+- `web.ux.clipboardWrite` — Wrote text to the clipboard.
+- `web.ux.clipboardRead` — Failed to execute 'readText' on 'Clipboard': Read permission denied.
+
+<!-- measured:end -->
+
+<<< capabilities/identity-and-accounts.md >>>
+
+---
+capability: Identity, accounts and signing
+probes: [host.account.connect, host.account.userId, host.account.productAccounts, host.account.legacyAccounts, host.account.deriveEntropy, host.account.signMessage, host.account.eip712, host.account.anonymousAlias, web.identity.webauthnSupport, web.identity.webauthnCreate, web.identity.credentialManagement, web.identity.fedcm, web.identity.digitalCredentials]
+---
+
+# Identity, accounts and signing
+
+**Status (2026-09-19, codec 1, Android):** connect, product accounts, deterministic entropy and
+host signing all work. The Ring VRF anonymous alias returns `null`. WebAuthn is absent.
+
+## Accounts a Product sees
+
+- **Product accounts** derive from the user's root *public* key, the product id and an index:
+  `deriveProductAccountPublicKey(parentPublicKey, productId, index)` in `product-sdk-keys`. Indices
+  give distinct keys (0, 1, 2 and 7 were checked). The catch: **anyone who knows a user's root
+  account can compute all their product accounts.** Per-index accounts do not hide a user from
+  someone who knows the root.
+- **The app often shows a Product only product account #0**, so there is no root to derive from
+  inside the app (almanac P8).
+- **Different jobs are signed by different accounts.** Uploads through `cloudStorage` are signed by
+  product account #0. Statements are signed by the allowance account, which is none of #0–#2.
+  Bulletin preimages are paid by a hidden slot account (almanac P6b, P8).
+- `getUserId()` returns a stable per-user handle. `getLegacyAccounts()` returned 0 accounts.
+
+```ts
+import { createApp } from "@parity/product-sdk";
+const app = await createApp({ name: PRODUCT_ID, cloudStorage: { environment: "devnet" } });
+const r = await app.wallet.connect();
+app.wallet.selectAccount(r.accounts[0].address);   // connected but unselected: storage calls stall, not error
+```
+
+## Keys a Product can keep for itself
+
+`deriveEntropy(input)` is **deterministic per product**. It gives the same bytes for the same input,
+across app restarts and across new builds of the product (almanac P2). Seed an app-local key with it
+and the key regenerates from nothing. Reinstall and a second phone are not measured yet.
+
+**EVM signatures:** the host signs sr25519. A contract's `ecrecover` needs secp256k1. An app-local
+secp256k1 key signs EIP-712 in 2–3 ms, and `verifyTypedData` recovers it exactly (FARE and sonde).
+So attestations a contract checks are signed locally, and the host signs chain transactions.
+
+## Signing through the host
+
+`app.wallet.signMessage` shows the host's prompt and returns 64 bytes. AutoSigning reports
+`NotAvailable`, so every signature is a tap. The promise settles only when the user answers.
+
+## Publishing is a different story
+
+`pad`, the deploy tool, signs through the phone as a hidden product account. The app never reveals
+that account, and it changed between app releases. So a `.dot` name registered from the phone can
+end up owned by an account the phone no longer signs as. Publish with a local deploy key:
+[pitfalls/deploy-with-a-key.md](../pitfalls/deploy-with-a-key.md).
+
+## Measured
+
+<!-- measured:start — generated by tools/build.mjs from runs/; edits here are overwritten -->
+
+| Probe | [2026-09-19_codec1_host-0.19.1_android-16](runs/2026-09-19_codec1_host-0.19.1_android-16.json) (partial) |
+|---|---|
+| `host.account.connect` wallet.connect + selectAccount | pass |
+| `host.account.userId` getUserId | pass |
+| `host.account.productAccounts` Per-index product account derivation | pass |
+| `host.account.legacyAccounts` getLegacyAccounts | pass |
+| `host.account.deriveEntropy` deriveEntropy — determinism | pass |
+| `host.account.signMessage` wallet.signMessage | pass |
+| `host.account.eip712` EIP-712 with an app-local burner key | pass |
+| `host.account.anonymousAlias` Ring VRF anonymous alias | unsupported · not-implemented |
+| `web.identity.webauthnSupport` WebAuthn availability | unsupported · not-implemented |
+| `web.identity.webauthnCreate` WebAuthn — create a credential | skip |
+| `web.identity.credentialManagement` Credential Management | pass |
+| `web.identity.fedcm` FedCM | unsupported · not-implemented |
+| `web.identity.digitalCredentials` Digital Credentials API | unsupported · not-implemented |
+
+Latest detail per probe:
+
+- `host.account.connect` — Connected and selected an account.
+- `host.account.userId` — Returned a user id.
+- `host.account.productAccounts` — 4 distinct key(s) across indices — per-index accounts are derivable.
+- `host.account.legacyAccounts` — 0 legacy account(s).
+- `host.account.deriveEntropy` — Deterministic: the same input gives the same entropy.
+- `host.account.signMessage` — Signed (64 bytes).
+- `host.account.eip712` — Signed and recovered in 3 ms — a contract's ecrecover would accept this.
+- `host.account.anonymousAlias` — getAnonymousAlias() returned null — no alias in this runtime.
+- `web.identity.webauthnSupport` — PublicKeyCredential is absent — no WebAuthn.
+- `web.identity.webauthnCreate` — Needs "web.identity.webauthnSupport", which came back unsupported. Running anyway would test a placeholder.
+- `web.identity.credentialManagement` — Present.
+- `web.identity.fedcm` — Not present in this runtime.
+- `web.identity.digitalCredentials` — Not present in this runtime.
+
+<!-- measured:end -->
+
+<<< capabilities/local-storage.md >>>
+
+---
+capability: Storage on the device
+probes: [host.localStorage.roundTrip, web.storage.webStorage, web.storage.indexedDb, web.storage.cacheStorage, web.storage.quota, web.storage.cookies, web.storage.storageAccessApi, web.filesystem.opfs]
+---
+
+# Storage on the device
+
+**Status (2026-09-19, codec 1, Android): use host local storage.** Web `localStorage` and OPFS also
+work. IndexedDB and CacheStorage are absent, and cookies don't persist.
+
+## Host local storage
+
+The host keeps a store per product id. It holds strings, JSON and bytes.
+
+```ts
+import { getHostLocalStorage } from "@parity/product-sdk-host";
+const store = await getHostLocalStorage();   // null outside the app
+await store!.writeBytes("k", bytes);  await store!.readBytes("k");
+await store!.writeJSON("j", obj);     await store!.readJSON("j");
+await store!.writeString("s", "v");   await store!.readString("s");
+await store!.clear("k");
+```
+
+- **Size:** one 4 MiB record was written and read back in 1.2–1.3 s (almanac P1).
+- **Survives:** an app restart, and publishing a new build of the product (almanac P1). An update
+  of the Polkadot app and a reinstall are **not measured yet**. Neither is whether the store is in
+  phone backups (almanac P5).
+- **Namespaced by product id.** Change the `.dot` label and the data is gone from the new name's
+  point of view.
+- An empty read may come back as a zero-length value. almanac treats empty as absent.
+
+## Web storage inside the app
+
+| API | Result |
+|---|---|
+| `localStorage` / `sessionStorage` | works |
+| Origin Private File System | works (64 KiB written and read back) |
+| IndexedDB | **absent**: `indexedDB` is undefined |
+| CacheStorage | **absent** |
+| Cookies | `document.cookie` writes don't persist, even though the document is top-level |
+| `navigator.storage.persist()` | best-effort only (evictable) |
+
+Libraries that assume IndexedDB (idb-keyval, Dexie, localForage's default driver, most wallet
+SDKs' session stores) fail inside the app. Give them a host-storage adapter.
+
+## Measured
+
+<!-- measured:start — generated by tools/build.mjs from runs/; edits here are overwritten -->
+
+| Probe | [2026-09-19_codec1_host-0.19.1_android-16](runs/2026-09-19_codec1_host-0.19.1_android-16.json) (partial) |
+|---|---|
+| `host.localStorage.roundTrip` Host local storage — string, JSON, bytes | pass |
+| `web.storage.webStorage` localStorage + sessionStorage round-trip | pass |
+| `web.storage.indexedDb` IndexedDB round-trip | unsupported · not-implemented |
+| `web.storage.cacheStorage` CacheStorage round-trip | unsupported · not-implemented |
+| `web.storage.quota` Quota estimate + persistence request | pass |
+| `web.storage.cookies` Cookies + Cookie Store API | blocked · policy-blocked-by-embedder |
+| `web.storage.storageAccessApi` Storage Access API | pass |
+| `web.filesystem.opfs` Origin Private File System | pass |
+
+Latest detail per probe:
+
+- `host.localStorage.roundTrip` — All three value types round-trip.
+- `web.storage.webStorage` — Both stores round-trip.
+- `web.storage.indexedDb` — indexedDB is not present in this runtime
+- `web.storage.cacheStorage` — caches is not present in this runtime
+- `web.storage.quota` — Quota reported; storage is best-effort (evictable).
+- `web.storage.cookies` — A first-party cookie did not persist. In a framed context this is partitioning or third-party cookie blocking, not a broken engine.
+
+  ```
+  navigator.cookieEnabled: true
+  document.cookie write : did not persist
+  cookieStore API       : present
+  cookieStore.getAll    : 0 cookie(s)
+  hasStorageAccess      : true
+  framed                : false
+  ```
+- `web.storage.storageAccessApi` — Present.
+- `web.filesystem.opfs` — Wrote and read back 64.0 KiB byte-for-byte.
+
+<!-- measured:end -->
+
+<<< capabilities/location.md >>>
+
+---
+capability: Location
+probes: [host.permissions.location, web.sensors.geolocation, web.sensors.geolocationWatch]
+---
+
+# Location
+
+**Status (2026-09-19, codec 1, Android 16): not available to a Product.** The host grants its
+`Location` permission, and `navigator.geolocation` still fails straight away. Design for no GPS.
+
+## What happens
+
+An Android WebView only gets location if the host app holds the OS permission **and** answers the
+WebView's `onGeolocationPermissionsShowPrompt` callback. The Polkadot app does neither for a Product:
+
+```
+navigator.geolocation.getCurrentPosition → error code 1, "User denied Geolocation"
+permissions.query({name:"geolocation"})  → "prompt"   (before and after)
+```
+
+`prompt` means the permission was never decided: no dialog was shown and nothing was stored. A real
+refusal by the user leaves `denied`. So the pattern **denied with the state still `prompt`** means the
+host never answered the callback. sonde calls this `host-callback-missing`.
+
+truapi declares `requestDevicePermission("Location")`, and the host grants it. Measured 2026-09-19,
+granting it changes nothing: web geolocation run straight after still fails the same way. The two
+permission systems are not connected. Upstream:
+[products-devnet-issues#7](https://github.com/Polkadot-Community-Foundation/products-devnet-issues/issues/7).
+
+## What to do
+
+1. **Ask the host anyway, once a session.** It costs one prompt, and a fixed app build may start
+   honouring it.
+2. **Classify the failure.** Don't tell the user "you denied location" when they never saw a prompt.
+3. **Build a path that needs no GPS.** Something a person can do: scan a QR code, confirm a pin on a
+   map, or have the other party co-sign.
+
+```ts
+import { isInsideContainer, requestDevicePermission, formatHostError } from "@parity/product-sdk-host";
+
+// Host calls can hang rather than fail — give each one a deadline (pitfalls/host-calls-can-hang.md).
+const inHost = await Promise.race([isInsideContainer(), new Promise<boolean>((r) => setTimeout(() => r(false), 1500))]);
+if (inHost) {
+  const r = await requestDevicePermission("Location"); // Result<boolean> from @parity/result: check r.ok
+  if (!r.ok) console.warn(formatHostError(r.error));
+}
+
+async function position(): Promise<GeolocationPosition> {
+  const before = (await navigator.permissions?.query({ name: "geolocation" }))?.state;
+  return new Promise((resolve, reject) =>
+    navigator.geolocation.getCurrentPosition(resolve, async (e) => {
+      const after = (await navigator.permissions?.query({ name: "geolocation" }))?.state;
+      // Denied without the state ever leaving "prompt": the host never answered the WebView.
+      const hostGap = e.code === e.PERMISSION_DENIED && before === "prompt" && after === "prompt";
+      reject(Object.assign(new Error(e.message), { kind: hostGap ? "host-callback-missing" : "user-or-os" }));
+    }, { enableHighAccuracy: true, timeout: 15_000 }),
+  );
+}
+```
+
+### A design that settles without GPS
+
+FARE, a delivery product, settles on **two parties who can't both lie signing the same place**. It
+doesn't trust either phone's GPS:
+
+- **Pickup:** the driver signs the venue's published pin, not their own fix.
+- **Dropoff:** the customer builds the driver's commitment from the drop position and a fresh salt,
+  and shows it as a QR code. The driver scans it and signs it blind. The zero-knowledge proximity
+  circuit is unchanged, because it only ever needed coordinates both parties committed to.
+
+The source is in the FARE repository (`web/src/handoff.ts`), and there is a summary in
+[sources/fare.md](../sources/fare.md).
+
+## Measured
+
+<!-- measured:start — generated by tools/build.mjs from runs/; edits here are overwritten -->
+
+| Probe | [2026-09-19_codec1_host-0.19.1_android-16](runs/2026-09-19_codec1_host-0.19.1_android-16.json) (partial) |
+|---|---|
+| `host.permissions.location` requestDevicePermission("Location") | pass |
+| `web.sensors.geolocation` Geolocation — one-shot fix | blocked · host-callback-missing |
+| `web.sensors.geolocationWatch` Geolocation — watchPosition | skip |
+
+Latest detail per probe:
+
+- `host.permissions.location` — Host granted Location. Web geolocation immediately after: still failed — User denied Geolocation
+- `web.sensors.geolocation` — User denied Geolocation
+
+  ```
+  permission before : {"geolocation":"prompt"}
+  permission after  : {"geolocation":"prompt"}
+  ```
+- `web.sensors.geolocationWatch` — Needs "web.sensors.geolocation", which came back blocked. Running anyway would test a placeholder.
+
+<!-- measured:end -->
+
+## History
+
+- 2026-07-31: failing, with the same `prompt` signature, on WebView Chromium 150 (FARE's own probe).
+- 2026-09-18: unchanged on Chromium 152. The host half could not run, because the product SDK spoke
+  wire codec 2 (see [pitfalls/wire-codec.md](../pitfalls/wire-codec.md)).
+- 2026-09-19: the host grants `Location`, and the web API still fails.
+
+<<< capabilities/media-and-calls.md >>>
+
+---
+capability: Camera, microphone, media and peer connections
+probes: [web.media.enumerateDevices, web.media.camera, web.media.microphone, web.media.imageCapture, web.media.mediaRecorder, web.media.displayMedia, web.media.pictureInPicture, web.graphics.webAudio, web.graphics.webrtc, web.graphics.webCodecs]
+---
+
+# Camera, microphone, media and peer connections
+
+**Status (2026-09-19, codec 1, Android): the camera and microphone work through `getUserMedia`.
+WebRTC between phones is not measured yet.**
+
+- **Camera:** `getUserMedia({ video: { facingMode: "environment" } })` works, and so does a still at
+  480×640. FARE captured 12.3 KiB and compressed it to 3.2 KiB in 952 ms; the canvas re-encode
+  strips EXIF.
+- **QR codes:** `BarcodeDetector` is built in on Android (almanac P12). Where it's missing (iOS is
+  unmeasured), a JavaScript reader is about 62 KiB (`qr` 0.7.0).
+- **Microphone:** it opens. `MediaRecorder` supports 6 of 8 tested formats.
+- **Device labels** are empty until a grant: 3 devices showed, 0 with labels.
+- **Screen capture** is absent, as expected on mobile. **Picture-in-Picture** is disabled for the
+  document.
+
+## Peer connections (calls, live data)
+
+`RTCPeerConnection` exists, and on 2026-09-18 it gathered ICE candidates. What is **not measured**:
+
+- two phones connecting inside the app, after a `WebRtc` grant (almanac P13)
+- two phones on different cellular networks, where carrier-grade NAT usually needs a TURN relay
+
+The plan being built is Statement Store signalling with a minified, non-trickle SDP: one
+statement per side, replaced in place. See [statement-store.md](statement-store.md) and
+[sources/fare.md](../sources/fare.md).
+
+## Measured
+
+<!-- measured:start — generated by tools/build.mjs from runs/; edits here are overwritten -->
+
+| Probe | [2026-09-19_codec1_host-0.19.1_android-16](runs/2026-09-19_codec1_host-0.19.1_android-16.json) (partial) |
+|---|---|
+| `web.media.enumerateDevices` enumerateDevices — labels before grant | pass |
+| `web.media.camera` Camera capture (getUserMedia → still) | pass |
+| `web.media.microphone` Microphone capture | pass |
+| `web.media.imageCapture` ImageCapture | pass |
+| `web.media.mediaRecorder` MediaRecorder codec support | pass |
+| `web.media.displayMedia` Screen capture (getDisplayMedia) | unsupported · not-implemented |
+| `web.media.pictureInPicture` Picture-in-Picture | blocked · policy-blocked-by-embedder |
+| `web.graphics.webAudio` Web Audio | pass |
+| `web.graphics.webrtc`  | — |
+| `web.graphics.webCodecs`  | — |
+
+Latest detail per probe:
+
+- `web.media.enumerateDevices` — 3 device(s); 0 with labels.
+- `web.media.camera` — Captured via getUserMedia (480x640, environment camera).
+- `web.media.microphone` — Microphone open.
+- `web.media.imageCapture` — Present.
+- `web.media.mediaRecorder` — 6 of 8 formats supported.
+- `web.media.displayMedia` — mediaDevices.getDisplayMedia is absent — the expected answer on mobile.
+- `web.media.pictureInPicture` — document.pictureInPictureEnabled is false — the feature is disabled for this document, most likely by permissions-policy.
+- `web.graphics.webAudio` — Present.
+
+<!-- measured:end -->
+
+<<< capabilities/network.md >>>
+
+---
+capability: Network
+probes: [web.net.fetch, web.net.websocket, web.net.eventSource, web.net.webTransport, web.net.beacon, web.net.csp, web.net.connection, web.net.permissionsPolicy]
+---
+
+# Network
+
+**Status (2026-09-19, codec 1, Android): open.** `fetch` works same-origin, cross-origin (CORS)
+and streaming. WebSocket to public RPC nodes works, and SSE and WebTransport are present.
+`sendBeacon` is refused.
+
+- **No content policy you can read.** The page has no CSP meta tag, and a header policy can't be
+  read from script. almanac P10 found nothing blocked: the devnet IPFS gateway, People-chain and
+  Bulletin RPC nodes were all reachable.
+- **`navigator.sendBeacon` returns `false`**: the request is refused. Analytics and "flush on
+  unload" code that relies on it silently loses data. Use `fetch(..., { keepalive: true })`, and
+  test that it works.
+- **The devnet IPFS gateway** (`https://devnet-ipfs.api.polkadotcommunity.foundation`) serves
+  Bulletin content under both SHA-256 and BLAKE2b-256 CIDs, in about 400–600 ms. It serves
+  Bulletin, not the public IPFS network.
+- `navigator.connection` reports the link type (`4g`).
+
+## Measured
+
+<!-- measured:start — generated by tools/build.mjs from runs/; edits here are overwritten -->
+
+| Probe | [2026-09-19_codec1_host-0.19.1_android-16](runs/2026-09-19_codec1_host-0.19.1_android-16.json) (partial) |
+|---|---|
+| `web.net.fetch` fetch — same-origin, CORS, streaming | pass |
+| `web.net.websocket` WebSocket connect | pass |
+| `web.net.eventSource` Server-Sent Events | pass |
+| `web.net.webTransport` WebTransport | pass |
+| `web.net.beacon` sendBeacon | fail · wrong-result |
+| `web.net.csp` Content Security Policy in force | pass |
+| `web.net.connection` Network Information + online state | pass |
+| `web.net.permissionsPolicy` Permissions-Policy introspection | pass |
+
+Latest detail per probe:
+
+- `web.net.fetch` — Same-origin, cross-origin, and streaming all work.
+- `web.net.websocket` — Connected to wss://rpc.polkadot.io.
+- `web.net.eventSource` — Present.
+- `web.net.webTransport` — Present.
+- `web.net.beacon` — sendBeacon returned false — the request was refused, most likely by CSP connect-src.
+- `web.net.csp` — No CSP meta tag; any policy is header-delivered and unreadable from script.
+- `web.net.connection` — Link reports as 4g.
+- `web.net.permissionsPolicy` — Top-level document; 59 feature(s) allowed.
+
+<!-- measured:end -->
+
+<<< capabilities/notifications.md >>>
+
+---
+capability: Notifications and background reach
+probes: [host.permissions.notifications, host.notifications.push, web.ux.notifications, web.ux.push, web.compute.serviceWorker, web.ux.badging]
+---
+
+# Notifications
+
+**Status (2026-09-19, codec 1, Android): use the host's notification manager.** The web routes are
+absent: `Notification`, service workers and `PushManager` don't exist in the app.
+
+## Use it
+
+```ts
+import { getNotificationManager, requestDevicePermission } from "@parity/product-sdk-host";
+await requestDevicePermission("Notifications");
+const n = await getNotificationManager();                  // null when unavailable
+// scheduledAt is a bigint (almanac passes BigInt(ms since epoch)); omit it to show now.
+const id = await n!.push({ text: "Your order is ready", scheduledAt: BigInt(Date.now() + 120_000) });
+await n!.cancel(id);
+```
+
+- **Scheduled notifications fire with the Polkadot app closed.** A reminder scheduled two minutes
+  out arrived with the app closed, on two separate builds (almanac P3). That makes reminders
+  possible without a server.
+- A server can't reach a closed Product through web push, because there is none. No host call for
+  server-sent push has been found or measured either.
+
+## Don't
+
+- **Don't feature-detect web push by `navigator.serviceWorker`.** The property exists, but
+  registration throws "ServiceWorker is not available" and `PushManager` is absent. It is a
+  half-implemented API: the check passes and the call fails. Detect `PushManager` and a successful
+  registration, or skip web push inside the app.
+
+## Measured
+
+<!-- measured:start — generated by tools/build.mjs from runs/; edits here are overwritten -->
+
+| Probe | [2026-09-19_codec1_host-0.19.1_android-16](runs/2026-09-19_codec1_host-0.19.1_android-16.json) (partial) |
+|---|---|
+| `host.permissions.notifications` requestDevicePermission("Notifications") | pass |
+| `host.notifications.push` Host push notification | pass |
+| `web.ux.notifications` Notifications | unsupported · not-implemented |
+| `web.ux.push` Push API | fail · not-implemented |
+| `web.compute.serviceWorker` Service Worker registration | fail · threw |
+| `web.ux.badging` App Badging | pass |
+
+Latest detail per probe:
+
+- `host.permissions.notifications` — Host granted Notifications.
+- `host.notifications.push` — Host accepted a push notification.
+- `web.ux.notifications` — Notification is not present in this runtime
+- `web.ux.push` — Partially present — 1 of 2 entry points are missing. A half-implemented API is worse than an absent one: feature detection passes and the call fails.
+
+  ```
+  PushManager           : absent
+  navigator.serviceWorker: present (object)
+  ```
+- `web.compute.serviceWorker` — ServiceWorker is not available
+- `web.ux.badging` — Present.
+
+<!-- measured:end -->
+
+<<< capabilities/payments.md >>>
+
+---
+capability: Payments
+probes: [host.payment.balance, web.identity.paymentRequest, web.identity.paymentHandler]
+---
+
+# Payments
+
+**Status (2026-09-19, codec 1, Android): not usable yet.** The host's payment manager exists, but
+its balance subscription delivered nothing in 3 s, not even a zero. The web Payment Request API
+is absent.
+
+```ts
+import { getPaymentManager } from "@parity/product-sdk-host";
+const pm = await getPaymentManager();
+const sub = pm!.subscribeBalance((b) => render(b));   // 2026-09-19: never called back
+```
+
+A Product can't show a balance or decide whether the user can afford something. Keep payments
+out of the critical path, and handle funds with contracts the user signs for through the wallet
+([identity-and-accounts.md](identity-and-accounts.md)).
+
+**Not measured:** whether a balance ever arrives after more than 3 s. Nothing here has probed a
+payment that moves funds.
+
+## Measured
+
+<!-- measured:start — generated by tools/build.mjs from runs/; edits here are overwritten -->
+
+| Probe | [2026-09-19_codec1_host-0.19.1_android-16](runs/2026-09-19_codec1_host-0.19.1_android-16.json) (partial) |
+|---|---|
+| `host.payment.balance` Payment — balance subscription (read-only) | fail · wrong-result |
+| `web.identity.paymentRequest` Payment Request — canMakePayment | unsupported · not-implemented |
+| `web.identity.paymentHandler` Payment Handler | unsupported · not-implemented |
+
+Latest detail per probe:
+
+- `host.payment.balance` — Subscribed but no balance arrived in 3 s — not even a zero.
+
+  ```
+  A Product cannot show a balance, or decide whether it can afford anything.
+  ```
+- `web.identity.paymentRequest` — PaymentRequest is absent.
+- `web.identity.paymentHandler` — Not present in this runtime.
+
+<!-- measured:end -->
+
+<<< capabilities/permissions.md >>>
+
+---
+capability: Permissions (host and web)
+probes: [host.permissions.location, host.permissions.camera, host.permissions.microphone, host.permissions.notifications, host.permissions.bluetooth, host.permissions.nfc, host.permissions.clipboard, host.permissions.openurl, host.permissions.biometrics, host.permissions.remote, web.platform.permissionsApi, web.net.permissionsPolicy]
+---
+
+# Permissions
+
+A Product deals with **two permission systems that don't talk to each other**:
+
+1. **Host permissions.** These are truapi's `requestDevicePermission(name)` and `requestPermission(…)`.
+   The Polkadot app shows its own prompt and returns a `Result<boolean>`.
+2. **Web permissions.** These are the Android WebView's, for geolocation, camera, clipboard and so
+   on. The host has to answer the WebView's callbacks for them.
+
+A host grant doesn't imply the web API works. Location is the proof: the host grants it and
+`navigator.geolocation` still fails ([location.md](location.md)). Camera and microphone do work
+through `getUserMedia` ([media-and-calls.md](media-and-calls.md)).
+
+## Device permissions
+
+`requestDevicePermission` takes one of: `Location`, `Camera`, `Microphone`, `Notifications`,
+`Bluetooth`, `NFC`, `Clipboard`, `OpenUrl`, `Biometrics`. All nine were granted on 2026-09-19. The
+grant is what the host says; whether the matching web API then works is a separate row in the
+matrix.
+
+```ts
+import { requestDevicePermission, formatHostError } from "@parity/product-sdk-host";
+const r = await requestDevicePermission("Camera");
+if (!r.ok) console.warn(formatHostError(r.error));    // @parity/result: read r.ok, never r.isOk()
+else if (!r.value) console.warn("declined");
+```
+
+## Remote and resource permissions
+
+- **`requestPermission({ tag, value })`** covers what a Product may ask the host to *do*. There
+  are five variants, and all five were granted on 2026-09-19:
+  - `Remote`, with `{ domains: [...] }`, for outbound network access
+  - `WebRtc`
+  - `ChainSubmit`
+  - `PreimageSubmit`, for storing on Bulletin ([bulletin-storage.md](bulletin-storage.md))
+  - `StatementSubmit`
+
+  The submit variants are also asked for implicitly by the calls that need them. So a refusal here
+  can surface later as a failure that looks unrelated.
+- **`requestResourceAllocation([{ tag }])`** covers quota: `BulletinAllowance` and
+  `StatementStoreAllowance`. It returns an outcome per item. `Allocated` is not the final word:
+  Bulletin's allocation lands on a slot account that only the host can use.
+
+## Web permissions that are blocked by the embedder
+
+The app's WebView disables these for the document. The Permissions-Policy or a WebView setting
+refuses them before any prompt:
+
+- fullscreen
+- Picture-in-Picture
+- clipboard **read** (clipboard write works)
+- Idle Detection
+- Web NFC scan
+- WebGPU (no adapter)
+
+See [ui-and-display.md](ui-and-display.md) and [sensors-and-hardware.md](sensors-and-hardware.md).
+
+## Measured
+
+<!-- measured:start — generated by tools/build.mjs from runs/; edits here are overwritten -->
+
+| Probe | [2026-09-19_codec1_host-0.19.1_android-16](runs/2026-09-19_codec1_host-0.19.1_android-16.json) (partial) |
+|---|---|
+| `host.permissions.location` requestDevicePermission("Location") | pass |
+| `host.permissions.camera` requestDevicePermission("Camera") | pass |
+| `host.permissions.microphone` requestDevicePermission("Microphone") | pass |
+| `host.permissions.notifications` requestDevicePermission("Notifications") | pass |
+| `host.permissions.bluetooth` requestDevicePermission("Bluetooth") | pass |
+| `host.permissions.nfc` requestDevicePermission("NFC") | pass |
+| `host.permissions.clipboard` requestDevicePermission("Clipboard") | pass |
+| `host.permissions.openurl` requestDevicePermission("OpenUrl") | pass |
+| `host.permissions.biometrics` requestDevicePermission("Biometrics") | pass |
+| `host.permissions.remote` requestRemotePermission — all five variants | pass |
+| `web.platform.permissionsApi` Permissions API coverage | pass |
+| `web.net.permissionsPolicy` Permissions-Policy introspection | pass |
+
+Latest detail per probe:
+
+- `host.permissions.location` — Host granted Location. Web geolocation immediately after: still failed — User denied Geolocation
+- `host.permissions.camera` — Host granted Camera.
+- `host.permissions.microphone` — Host granted Microphone.
+- `host.permissions.notifications` — Host granted Notifications.
+- `host.permissions.bluetooth` — Host granted Bluetooth.
+- `host.permissions.nfc` — Host granted NFC.
+- `host.permissions.clipboard` — Host granted Clipboard.
+- `host.permissions.openurl` — Host granted OpenUrl.
+- `host.permissions.biometrics` — Host granted Biometrics.
+- `host.permissions.remote` — 5 of 5 granted.
+- `web.platform.permissionsApi` — 16 of 20 permission names recognised.
+- `web.net.permissionsPolicy` — Top-level document; 59 feature(s) allowed.
+
+<!-- measured:end -->
+
+<<< capabilities/sensors-and-hardware.md >>>
+
+---
+capability: Sensors and hardware
+probes: [web.sensors.deviceMotionEvents, web.sensors.accelerometer, web.sensors.gyroscope, web.sensors.magnetometer, web.sensors.absoluteOrientation, web.sensors.relativeOrientation, web.sensors.ambientLight, web.connectivity.bluetooth, web.connectivity.usb, web.connectivity.hid, web.connectivity.serial, web.connectivity.nfcRead, web.connectivity.nfcWrite, web.platform.battery, web.platform.gamepad, web.platform.midi, web.ux.vibrate]
+---
+
+# Sensors and hardware
+
+**Status (2026-09-19, codec 1, Android): motion sensors work. Bluetooth, USB, HID and serial are
+absent, and NFC is refused.** Location is on its own page: [location.md](location.md).
+
+| Works | Absent or refused |
+|---|---|
+| DeviceMotion and DeviceOrientation events (177 motion, 1 orientation in 3 s) | Web Bluetooth, even with the host's `Bluetooth` granted |
+| Accelerometer, Gyroscope, AbsoluteOrientationSensor | Magnetometer, AmbientLightSensor |
+| Battery Status, Gamepad, Web MIDI (non-sysex) | WebUSB, WebHID, Web Serial |
+| Vibration (accepted; whether the motor fired can't be seen from script) | **Web NFC scan: "NFC permission request denied"**, even with the host's `NFC` granted |
+
+The host grants `Bluetooth` and `NFC` as device permissions, yet the web APIs stay closed. It is
+the same split as location ([permissions.md](permissions.md)).
+
+## Measured
+
+<!-- measured:start — generated by tools/build.mjs from runs/; edits here are overwritten -->
+
+| Probe | [2026-09-19_codec1_host-0.19.1_android-16](runs/2026-09-19_codec1_host-0.19.1_android-16.json) (partial) |
+|---|---|
+| `web.sensors.deviceMotionEvents` DeviceMotion / DeviceOrientation events | pass |
+| `web.sensors.accelerometer` Accelerometer (Generic Sensor) | pass |
+| `web.sensors.gyroscope` Gyroscope (Generic Sensor) | pass |
+| `web.sensors.magnetometer` Magnetometer (Generic Sensor) | unsupported · not-implemented |
+| `web.sensors.absoluteOrientation` AbsoluteOrientationSensor (Generic Sensor) | pass |
+| `web.sensors.relativeOrientation` RelativeOrientationSensor | pass |
+| `web.sensors.ambientLight` AmbientLightSensor (Generic Sensor) | unsupported · not-implemented |
+| `web.connectivity.bluetooth` Web Bluetooth — device picker | unsupported · not-implemented |
+| `web.connectivity.usb` WebUSB — device picker | unsupported · not-implemented |
+| `web.connectivity.hid` WebHID — device picker | unsupported · not-implemented |
+| `web.connectivity.serial` Web Serial — port picker | unsupported · not-implemented |
+| `web.connectivity.nfcRead` Web NFC — scan | blocked · os-denied |
+| `web.connectivity.nfcWrite` Web NFC — write | skip |
+| `web.platform.battery` Battery Status | pass |
+| `web.platform.gamepad` Gamepad API | pass |
+| `web.platform.midi` Web MIDI (non-sysex) | pass |
+| `web.ux.vibrate` Vibration | pass |
+
+Latest detail per probe:
+
+- `web.sensors.deviceMotionEvents` — Receiving events (177 motion, 1 orientation in 3 s).
+- `web.sensors.accelerometer` — Delivering readings.
+- `web.sensors.gyroscope` — Delivering readings.
+- `web.sensors.magnetometer` — Magnetometer is absent.
+- `web.sensors.absoluteOrientation` — Delivering readings.
+- `web.sensors.relativeOrientation` — Present.
+- `web.sensors.ambientLight` — AmbientLightSensor is absent.
+- `web.connectivity.bluetooth` — navigator.bluetooth is absent.
+- `web.connectivity.usb` — navigator.usb is absent.
+- `web.connectivity.hid` — navigator.hid is absent.
+- `web.connectivity.serial` — navigator.serial is absent — expected on mobile.
+- `web.connectivity.nfcRead` — Failed to execute 'scan' on 'NDEFReader': NFC permission request denied.
+- `web.connectivity.nfcWrite` — Needs "web.connectivity.nfcRead", which came back blocked. Running anyway would test a placeholder.
+- `web.platform.battery` — Exposed — level 100%, on battery.
+- `web.platform.gamepad` — API present; nothing connected (expected).
+- `web.platform.midi` — Granted — 0 input(s), 0 output(s).
+- `web.ux.vibrate` — Pattern accepted. (Whether the motor actually fired is not observable from script.)
+
+<!-- measured:end -->
+
+<<< capabilities/statement-store.md >>>
+
+---
+capability: Statement Store (small signed messages between phones)
+probes: [host.statement.subscribe, host.statement.createProof, host.statement.submit]
+---
+
+# Statement Store
+
+**Status (2026-09-17, codec 1, Android): works, including delivery between two phones.** It is
+tiny: 512 bytes per statement and about 1 KiB per account. Use it to find each other or to hold a
+pointer, not to carry data.
+
+## What it is good for
+
+- **A rendezvous point.** Two phones derive a topic from a secret they share, such as a code shown
+  as a QR. One publishes and the other subscribes. almanac P9b/P9c, 2026-09-17: phone B found phone
+  A's statement, carrying A's signer, on a phone that never held A's keys.
+- **A slot you overwrite.** Publishing again on the same `channel` replaces the earlier statement,
+  and a fresh subscription sees only the new one. That makes it a mutable pointer, or a revocable
+  share.
+- **Late joiners.** A subscription also delivers statements that already exist, so whoever opens
+  second still finds the offer.
+
+## Use it
+
+```ts
+import { createProofAuthorized, formatHostError, fromHex, getStatementStore, requestResourceAllocation, toHex } from "@parity/product-sdk-host";
+
+const store = await getStatementStore();                         // null when unavailable
+// Needed before the first submit (almanac P9). Asking again does no harm.
+await requestResourceAllocation([{ tag: "StatementStoreAllowance" }]);
+
+// Expiry is (unix seconds << 32) | sequence; a later expiry makes a statement newer.
+const expiry = BigInt(Math.floor((Date.now() + 3_600_000) / 1000)) << 32n;
+const statement = { topics: [toHex(topic)], channel: toHex(channel), expiry, data: toHex(sealed) };
+const proof = await createProofAuthorized(statement);             // the host signs
+if (!proof.ok) throw new Error(formatHostError(proof.error));
+await store!.submit({ ...statement, proof: proof.value });
+
+const sub = store!.subscribe({ matchAny: [toHex(topic)] }, (page) => {
+  for (const s of page.statements) if (s.data) heard(fromHex(s.data));
+});
+sub.onInterrupt(() => { /* the host dropped it: subscribe again after a pause */ });
+```
+
+almanac's working version is `app/src/platform/polkadot.ts` (`statementPort`).
+
+## Limits
+
+| Limit | Value | Source |
+|---|---|---|
+| Bytes per statement | 512 | `product-sdk-statement-store` 0.6.9 constants |
+| Bytes per account | ~1 KiB | same |
+| Statements per account | 2 to 4 seen, **not settled** | almanac P9: three runs disagreed, and each allowance grant may add room |
+| Longest expiry | 90 days accepted | almanac P9 |
+| When full | `AccountFull(submittedExpiry, minExpiry)` refuses a statement that expires sooner than the shortest one held | almanac P9 |
+| Default TTL | 30 s | SDK constants |
+| Latency between phones | **not measured** | — |
+
+## Don't
+
+- **Don't put plaintext in it.** Statements are public gossip, and anyone can compute a topic
+  derived from a public id. Seal the data, and derive topics from a shared secret.
+- **Don't assume the signer is the user.** Statements are signed by the product's allowance account,
+  not by product account #0 (almanac P8). It is per product, not per user, so a user's statements
+  can still be linked to each other within one product.
+- **Don't stream through it.** For anything larger, open WebRTC and use statements only for the
+  offer and answer. A minified, non-trickle SDP is about 150–250 bytes, which fits in one statement
+  ([sources/fare.md](../sources/fare.md)). WebRTC between two phones inside the app is **not
+  measured yet** (almanac P13).
+
+## Measured
+
+<!-- measured:start — generated by tools/build.mjs from runs/; edits here are overwritten -->
+
+| Probe | [2026-09-19_codec1_host-0.19.1_android-16](runs/2026-09-19_codec1_host-0.19.1_android-16.json) (partial) |
+|---|---|
+| `host.statement.subscribe` Statement Store — subscribe (read-only) | pass |
+| `host.statement.createProof` Statement Store — createProofAuthorized | pass |
+| `host.statement.submit` Statement Store — submit | ~~skip · spend-refused-by-allowlist~~ probe bug |
+
+Latest detail per probe:
+
+- `host.statement.subscribe` — 1 page(s) delivered.
+- `host.statement.createProof` — Host produced an authorized proof.
+- `host.statement.submit` — **Retracted, a probe bug:** Not measured: refused because no genesis resolved (the host.chain.genesis probe bug) and sonde's spend allowlist was empty. Both fixed in sonde on 2026-09-19. The run said: No genesis hash resolved yet — run host.chain.genesis first. Spending on an unidentified chain is refused.
+
+<!-- measured:end -->
+
+<<< capabilities/ui-and-display.md >>>
+
+---
+capability: UI, display and graphics
+probes: [web.ux.fullscreen, web.ux.orientationLock, web.ux.wakeLock, web.ux.virtualKeyboard, web.ux.viewTransitions, web.ux.eyeDropper, web.ux.idleDetection, web.ux.contactPicker, web.graphics.canvas2d, web.graphics.imageFormats, web.graphics.webgl, web.graphics.offscreenCanvas, web.graphics.webgpu, web.platform.speechSynthesis, web.platform.speechRecognition, web.platform.userAgentData]
+---
+
+# UI, display and graphics
+
+**Status (2026-09-19, codec 1, Android):** Canvas 2D, wake lock, View Transitions and the
+VirtualKeyboard API work. Fullscreen is disabled, orientation lock is unavailable, and WebGPU has no
+adapter. **AVIF doesn't decode.**
+
+- **AVIF images render blank, with no error.** Serve WebP or JPEG.
+- **Fullscreen is disabled** for the document (`fullscreenEnabled` is false), and
+  `screen.orientation.lock()` is unavailable. The host owns the chrome.
+- **Screen Wake Lock works.** It is useful for a screen showing a QR code, or a driver's
+  navigation view.
+- **WebGPU:** `navigator.gpu` exists, but `requestAdapter()` returns `null`. WebGL was cut off in
+  the 2026-09-19 copy of the report and is not recorded.
+- **Speech:** recognition is present. `speechSynthesis` is absent.
+- **Contact Picker** is present but throws "Unable to open a contact selector". **Idle Detection**
+  is denied.
+- `navigator.userAgentData` high-entropy hints give the device model.
+
+## Measured
+
+<!-- measured:start — generated by tools/build.mjs from runs/; edits here are overwritten -->
+
+| Probe | [2026-09-19_codec1_host-0.19.1_android-16](runs/2026-09-19_codec1_host-0.19.1_android-16.json) (partial) |
+|---|---|
+| `web.ux.fullscreen` Fullscreen | blocked · policy-blocked-by-embedder |
+| `web.ux.orientationLock` Screen orientation lock | unsupported · not-implemented |
+| `web.ux.wakeLock` Screen Wake Lock | pass |
+| `web.ux.virtualKeyboard` VirtualKeyboard API | pass |
+| `web.ux.viewTransitions` View Transitions | pass |
+| `web.ux.eyeDropper` EyeDropper | unsupported · not-implemented |
+| `web.ux.idleDetection` Idle Detection | blocked · os-denied |
+| `web.ux.contactPicker` Contact Picker | fail · threw |
+| `web.graphics.canvas2d` Canvas 2D + readback | pass |
+| `web.graphics.imageFormats` Image format decoding | unsupported · not-implemented |
+| `web.graphics.webgl`  | — |
+| `web.graphics.offscreenCanvas`  | — |
+| `web.graphics.webgpu` WebGPU adapter + device | blocked · os-denied |
+| `web.platform.speechSynthesis` Speech Synthesis voices | unsupported · not-implemented |
+| `web.platform.speechRecognition` Speech Recognition | pass |
+| `web.platform.userAgentData` userAgentData high-entropy hints | pass |
+
+Latest detail per probe:
+
+- `web.ux.fullscreen` — document.fullscreenEnabled is false — disabled for this document, most likely by permissions-policy.
+- `web.ux.orientationLock` — screen.orientation.lock() is not available on this device.
+- `web.ux.wakeLock` — Acquired a "screen" wake lock.
+- `web.ux.virtualKeyboard` — Present.
+- `web.ux.viewTransitions` — Present.
+- `web.ux.eyeDropper` — Not present in this runtime.
+- `web.ux.idleDetection` — Permission is "denied".
+- `web.ux.contactPicker` — Unable to open a contact selector
+- `web.graphics.canvas2d` — Pixels read back exactly, and export works.
+- `web.graphics.imageFormats` — Modern format(s) unavailable: avif. Images using them render blank with no error.
+- `web.graphics.webgpu` — navigator.gpu exists but requestAdapter() returned null — no compatible adapter, or WebGPU is disabled by policy.
+- `web.platform.speechSynthesis` — speechSynthesis is not present in this runtime
+- `web.platform.speechRecognition` — Present.
+- `web.platform.userAgentData` — Device identifies as "Pixel 10 Pro XL".
+
+<!-- measured:end -->
+
+<<< pitfalls/deploy-with-a-key.md >>>
+
+# Publish with a local deploy key, not the phone
+
+**Symptom:** `pad deploy` gets as far as "Link content" and reverts with
+`Revive.ContractReverted`. Or `pad` refuses because the name "is already owned by 0x…", and that
+address is one you don't recognise. `pad whoami` shows "Product address: unresolved".
+
+**Cause:** when `pad` signs through the phone, the signer is a **product account the wallet
+derives and never reveals.** The app answers signing requests but never answers `pad`'s request
+for that account's key, so `pad` *displays* the root account instead. Then:
+
+- A name registered in August is owned by the account the wallet signed as then. That account came
+  from the old public derivation (`product-sdk-keys` 0.3).
+- A name registered in September was handed to the root `pad` displayed.
+- The September app signs as a **third** account. It derives from a key the wallet holds
+  (`product-sdk-keys` 0.4), so it **can't be computed** off the phone. It was found by reading the
+  signer out of the raw extrinsic on chain.
+
+So neither name can be updated from the phone.
+
+## Do
+
+Hold a deploy key on your computer and run `pad` as a library:
+
+- The key owns the name and signs DotNS.
+- One of `pad`'s pool accounts signs the Bulletin upload. An owner key isn't authorized to store on
+  devnet, and a pool account can spend upload quota but never own or repoint the name.
+- Pass **`transferToSignedInUser: false`**. `pad` turns it on whenever a login session exists, and
+  would hand the finished name to the phone account.
+
+```js
+import { derivePoolAccounts } from "@polkadot-community-foundation/polkadot-app-deploy";
+import { deploy } from "@polkadot-community-foundation/polkadot-app-deploy/deploy";
+const pool = derivePoolAccounts();
+const up = pool[Math.floor(Math.random() * pool.length)];
+await deploy("dist", "yourlabel.dot", {
+  mnemonic,                          // the deploy key, from a mode-600 file outside the repo
+  storageSigner: up.signer,
+  storageSignerAddress: up.address,
+  transferToSignedInUser: false,
+  env: "devnet",
+  jsMerkle: true,
+});
+```
+
+Working scripts: sonde's `tools/deploy-key.mjs` and `tools/deploy.mjs`, and almanac's equivalents.
+Before registering, check the name's owner with a read-only lookup (`tools/whois.mjs`). Refuse if
+the owner is not your key, and make registering an explicit, typed-back step.
+
+## Also
+
+- **`PRODUCT_ID` must equal the `.dot` label.** The host keys product accounts, local storage and
+  allowances by it. If they drift apart, host probes exercise an identity that never published
+  anything.
+- **Labels:** a signer with no personhood can register a base of **9 or more letters**, with or
+  without two trailing digits. A base of 6–8 letters with two digits needs Personhood Lite. `pad`'s
+  preflight is not a stopping point: for an eligible name it goes straight on to registration. So
+  never loop `pad` over candidate names; each one it's allowed to register, it registers, at about
+  10 PAS.
+- **Debugging a revert:** read the signer off the raw extrinsic before forming a theory. An
+  afternoon went to two wrong ones.
+
+<<< pitfalls/dotns-registrar-moved.md >>>
+
+# The devnet DotNS registrar moved
+
+**Symptom:** a read-only ownership lookup says a name you just registered has no owner, or `pad`
+and your own scripts disagree about a name.
+
+**Cause:** on the Paseo Asset Hub EVM (`https://eth-rpc-testnet.polkadot.io/`, chain id 420420417),
+the DotNS registrar was redeployed. Names registered after the move exist only in the new one.
+
+| Contract | Address (as `pad` 0.16.6 has it, 2026-09-18) |
+|---|---|
+| Registrar (ERC-721; tokenId = namehash of `label.dot`) | `0xc609e0c2DAB4433d55a32FB098Db8788C1956302` |
+| Personhood rules (`POP_RULES`) | `0xD5Ee34610F06f7FF4668aB4fabE2393B65a43AE7` |
+| Registry | `0xb052E5EfC5ADEff1f21d48DEfb5169Cb394A1a73` |
+| Content resolver | `0x7e75491ecfb04900EB05ee63CABA2B33900aABB5` |
+
+**Do:** read contract addresses from the installed `pad` package rather than hard-coding them, or
+re-check them whenever `pad` updates. sonde's and almanac's `tools/whois.mjs` show a read-only
+lookup.
+
+<<< pitfalls/host-calls-can-hang.md >>>
+
+# Host calls can hang instead of failing
+
+Many host calls, when they can't do what was asked, **never settle**: no value, no error. A Product
+that awaits one without a deadline freezes, and never reaches its fallback.
+
+| Call | When it goes silent | Seen |
+|---|---|---|
+| Every host call | the SDK speaks a wire codec the app doesn't ([wire-codec.md](wire-codec.md)) | sonde 2026-09-18 |
+| `isInsideContainer()` | outside the app: nobody is there to answer | by design |
+| `preimageManager.lookup(key, cb)` | the content is absent, or was stored under SHA-256: there is no "not found" | almanac P7, sonde |
+| `cloudStorage.fetch(cid)` | the same, until the SDK's own 30 s timeout | almanac P7, sonde |
+| `getChainSpec(genesis)` | a genesis the host doesn't carry: the run waited 45 s | sonde 2026-09-19 |
+| `paymentManager.subscribeBalance(cb)` | always, so far | sonde 2026-09-19 |
+| `cloudStorage.upload` | S1: hung 180 s with no error | FARE |
+| `wallet.signMessage` | until the user answers the prompt | by design |
+
+## Do
+
+```ts
+export function withTimeout<T>(p: Promise<T>, ms: number, what: string): Promise<T> {
+  let t: ReturnType<typeof setTimeout>;
+  return Promise.race([
+    p,
+    new Promise<never>((_, reject) => { t = setTimeout(() => reject(new Error(`${what}: no answer in ${ms / 1000} s`)), ms); }),
+  ]).finally(() => clearTimeout(t));
+}
+```
+
+Suggested deadlines, from measurements:
+
+| Kind of call | Deadline |
+|---|---|
+| Detection | 1.5 s |
+| A prompt the user must read and tap | 60 s |
+| A Bulletin upload | 120–180 s (1 MiB took 41 s) |
+| A lookup the host holds | 30 s (a hit comes back in under 1 s) |
+
+For subscriptions, resolve on the first useful callback, unsubscribe when the timer fires, and
+treat silence as "unknown", never as "absent".
+
+<<< pitfalls/sdk-gotchas.md >>>
+
+# SDK gotchas
+
+Small things in `@parity/product-sdk*` that cost an afternoon each.
+
+- **Two `Result` conventions.** The top-level wrappers in `@parity/product-sdk-host`
+  (`requestDevicePermission`, `requestPermission`, `deriveEntropy`, `getChainSpec`, `navigateTo`,
+  `requestResourceAllocation`, `createProofAuthorized`…) return `@parity/result`'s
+  `{ ok, value } | { ok, error }`. The raw truapi client and `AccountsProvider` return neverthrow's
+  `ResultAsync`, which has `.match()` and **no `.ok`**. Reading `.ok` off the second yields
+  `undefined`, so every call looks like a failure.
+- **`BulletinAllowance`, not `BulletInAllowance`.** The TypeScript type spells it with a capital I,
+  and that spelling throws. Cast: `{ tag: "BulletinAllowance", value: undefined } as never`.
+- **`Allocated` doesn't mean an upload will work.** Through `cloudStorage.upload` it never does
+  (`Invalid: Payment`). Use `getPreimageManager().submit()`
+  ([capabilities/bulletin-storage.md](../capabilities/bulletin-storage.md)).
+- **`createApp`'s cloud storage defaults to `"paseo"`.** Pass `cloudStorage: { environment: "devnet" }`
+  when you publish to devnet, or `createApp` throws that the chain isn't supported.
+- **Connected isn't selected.** After `wallet.connect()`, call `wallet.selectAccount(address)`, or
+  storage calls stall.
+- **Statement expiry is `(unix seconds << 32) | sequence`**, as a bigint.
+- **The host's lookup takes a bare 32-byte digest**, not a CID. `cidToPreimageKey` accepts SHA-256
+  CIDs, but only BLAKE2b-256 content is found.
+- **`getAnonymousAlias()` returns `null`.** Don't design on the Ring VRF alias yet.
+
+<<< pitfalls/wire-codec.md >>>
+
+# The TrUAPI wire codec must match the app
+
+**Symptom:** inside the app, **every** host call hangs, or fails at the handshake with "the host did
+not answer on wire codec 2". Container detection still says you're inside the app, and nothing else
+works.
+
+**Cause:** `@parity/truapi` changed its wire codec from 1 to 2 in 0.16.0. A Product built on codec 2
+talks past an app that only answers codec 1. The app doesn't reject the message; it just never
+answers.
+
+**As of 2026-09-19 the Polkadot app on Android answers codec 1 only.** The last SDK set on codec 1:
+
+```json
+{
+  "@parity/product-sdk": "0.27.0",
+  "@parity/product-sdk-host": "0.19.1",
+  "@parity/product-sdk-keys": "0.3.24",
+  "@parity/product-sdk-statement-store": "0.6.9",
+  "@parity/product-sdk-terminal": "0.8.2",
+  "@parity/truapi": "0.13.1"
+}
+```
+
+`product-sdk-host` 0.20 and later depend on truapi ≥ 0.16, which is codec 2.
+
+## Do
+
+- **Pin exact versions** (no `^`). A routine `npm update` moves you onto codec 2.
+- **Check what you shipped:** `import { TRUAPI_CODEC_VERSION } from "@parity/truapi"`, and show it
+  in a debug footer.
+- **Give the handshake and the first host call a deadline**, so a mismatch reads as "host didn't
+  answer" and not as a spinner that never stops.
+- **When a new app ships,** run a probe built on the newer SDK (sonde records the codec in every
+  run). The first run where a codec 2 handshake passes is when to move.
+
+Measured by sonde on 2026-09-18: a codec 2 build failed every handshake. Pinned back to codec 1 on
+2026-09-19, the handshake passed in 36 ms.
+
+<<< sources/almanac-probe.md >>>
+
+# almanac's device probe (P1–P14)
+
+[almanac](https://github.com/Baronvonbonbon/almanac) is a private cycle tracker built as a Product.
+Before building on the platform, it measured it: a probe app published as `almanacprobe.dot`, and
+checks named P1–P14. The full answers are in
+[docs/PROBE-REPORT.md](https://github.com/Baronvonbonbon/almanac/blob/main/docs/PROBE-REPORT.md).
+Device: Pixel 10 Pro XL, Android 16, Polkadot app 1.0.0 (40), 2026-09-13 to 17, on
+`product-sdk` 0.27.0 and `product-sdk-host` 0.19.1 (codec 1).
+
+| Check | Answer | Used on |
+|---|---|---|
+| P1 host storage | survives restarts and new builds; 4 MiB in one record, 1.2–1.3 s. App update and reinstall not tested | [local-storage](../capabilities/local-storage.md) |
+| P2 `deriveEntropy` | same bytes across restarts and builds. Reinstall and a second phone not tested | [identity-and-accounts](../capabilities/identity-and-accounts.md) |
+| P3 scheduled notification | fires with the app closed | [notifications](../capabilities/notifications.md) |
+| P4 exports | nothing leaves as a file; clipboard write and picked-file read work | [files-and-sharing](../capabilities/files-and-sharing.md) |
+| P5 phone backups | not run | — |
+| P6 `cloudStorage.upload` | always `Invalid: Payment`; the product account holds no authorization | [bulletin-storage](../capabilities/bulletin-storage.md) |
+| P6b preimage submit | works; paid from a hidden slot account's quota (10 transactions and 4 MiB a claim, ~14 days) | [bulletin-storage](../capabilities/bulletin-storage.md) |
+| P6c upload sizes | 16 KiB 6.7 s, 64 KiB 10.0 s, 256 KiB 16.8 s, 1 MiB 41.4 s; charged exactly by size | [bulletin-storage](../capabilities/bulletin-storage.md) |
+| P7 reads and retention | the host finds BLAKE2b-256 only; the gateway finds both; retention being measured (~2 weeks) | [bulletin-storage](../capabilities/bulletin-storage.md) |
+| P8 which account signs | uploads: product account #0; statements: another account, not #0–#2 | [identity-and-accounts](../capabilities/identity-and-accounts.md) |
+| P9 Statement Store | replace-in-place works; subscriptions deliver existing statements; 90-day expiry accepted; capacity per account not settled | [statement-store](../capabilities/statement-store.md) |
+| P9b/P9c between phones | delivery works, found by topic | [statement-store](../capabilities/statement-store.md) |
+| P10 network | gateway and RPC nodes reachable; nothing blocked | [network](../capabilities/network.md) |
+| P11 crypto speed | scrypt N=2¹⁶ 169 ms; XChaCha 1 MiB 24 ms; BLAKE2b 1 MiB 18 ms | [compute-and-crypto](../capabilities/compute-and-crypto.md) |
+| P12 theme and camera | the host theme, not the phone's; camera and `BarcodeDetector` work | [app-and-system](../capabilities/app-and-system.md), [media-and-calls](../capabilities/media-and-calls.md) |
+| P13 WebRTC between phones | not run | [media-and-calls](../capabilities/media-and-calls.md) |
+| P14 QR codes on iOS | not run | — |
+
+None of this is in `runs/` yet. almanac's report predates the run schema and uses its own check ids.
+
+<<< sources/fare.md >>>
+
+# FARE: designs that work around the gaps
+
+[FARE](https://github.com/Baronvonbonbon/fare) is a delivery and ride Product. Its contracts are on
+Paseo Asset Hub, and its driver and customer surfaces run inside the Polkadot app. Three of its
+designs answer gaps measured here. The detail is in FARE's `docs/POLKADOT-PLATFORM-PLAN.md`
+(§4.7, §4.10–§4.12).
+
+## Settling without GPS (built)
+
+Location is unavailable ([capabilities/location.md](../capabilities/location.md)). FARE's guarantee
+was never the geometry; it is **two parties with opposite interests signing the same thing**:
+
+- **Pickup:** the driver signs the venue's published pin.
+- **Dropoff:** the customer builds the driver's commitment from the drop position and a fresh salt,
+  and shows it as a QR code (`makeDropoffRequest`). The driver scans it and signs it blind
+  (`signDropoffRequest`).
+
+The Groth16 proximity circuit is unchanged, and a test runs it against a real proof
+(`test/gps-free-settlement.test.ts`). Code: `web/src/handoff.ts`, `web/src/geo.ts`,
+`web/src/host.ts`.
+
+## Signalling over the Statement Store, data over WebRTC (designed)
+
+A statement holds 512 bytes, and an account about 1 KiB. So the Statement Store carries only the
+connection setup, and WebRTC carries the payload:
+
+- **Non-trickle, minified SDP.** Wait for ICE gathering to finish, then send only ufrag, password,
+  DTLS fingerprint and a few candidates: about 150–250 bytes. Rebuild the full SDP from a template
+  at the other end.
+- **One statement per side per order, replaced in place:** the offer, then the answer.
+- **Sealed, on a topic derived from a secret the parties share.** Candidates carry IP addresses, and
+  statements are public.
+
+Risks, in order: carrier-grade NAT on cellular (plan a TURN relay), linkage through the product's
+allowance account, and both parties having to be online.
+
+## Bulletin as dispute evidence (designed)
+
+Delivery photos go to Bulletin through the host, and live about 14 days. That lifetime is the
+evidence window, if:
+
+1. The photo's BLAKE2b-256 key is **committed in something signed at the event**, not cited later.
+2. The dispute clock fits inside the storage clock: for example, open within 72 h and rule within
+   10 days. Re-uploading the same bytes renews them under the same key.
+3. Only the arbiter can read it: sealed, with the key encrypted to the arbiter at filing.
+4. The arbiter can fetch outside the app, through the devnet IPFS gateway.
+
+Limit: Bulletin is on the devnet, which resets, while the contracts are on Paseo. Fine for a demo,
+not for production.
+
+<<< sources/sonde.md >>>
+
+# sonde: measuring from inside the app
+
+[sonde](https://github.com/Baronvonbonbon/sonde) is a Product that probes the platform from inside
+the Polkadot app. It is published at `sondeprobes.dot`. It runs about 130 probes over the host API
+and the web platform. Every probe is bounded by a deadline, so a hang reads as `timeout` instead of
+a frozen page. It separates **absent** (`unsupported`), **forbidden** (`blocked`) and **broken**
+(`fail`), and records a diagnosis such as `host-callback-missing` or `policy-blocked-by-embedder`.
+
+## Tiers
+
+- **T0 detect** and **T1 invoke** have no side effects.
+- **T2 prompt** shows host prompts; tap through them.
+- **T3 spend** writes to chain: a Bulletin upload and a statement. It runs only on chains in sonde's
+  spend allowlist, which holds the devnet "Next" chains and refuses mainnet by name.
+
+## Adding a run to this repository
+
+1. Open `sondeprobes.dot` in the Polkadot app, run the tiers you're comfortable with, and tap
+   **Copy record**. The record has addresses, keys and picked file names removed. It leaves out
+   language, time zone and screen size.
+2. Save it as `runs/<key>.json`. The key is in the record: date, wire codec, `product-sdk-host`
+   version and OS.
+3. If you skipped a probe by hand, or read the app version off the phone, add a line to `notes` or
+   set `runtime.appVersion`.
+4. Run `node tools/build.mjs` and open a pull request.
+
+Reports copied before the Copy record button existed can be converted with
+`tools/import-sonde-markdown.mjs` (see `raw/`).
+
+## When a result is the probe's fault
+
+A result that measured a bug in the probe is kept, with a `retracted` note saying what was wrong.
+The matrix strikes it out. Three from 2026-09-19 were retracted:
+
+- a made-up genesis hash, so `getChainSpec` waited forever
+- a SHA-256 CID that the host's lookup can never find
+- `navigateTo` pointed at the page's own URL, which reloads it
+
+All three are fixed in sonde. Read a probe's source before filing a platform bug on its result.
+
+<<< matrix.md >>>
+
+# Matrix
+
+Every probe in every run, newest run first. Generated by `tools/build.mjs` from `runs/` — do not edit.
+`—` means the run has no result for that probe (not run, or lost from a partial copy), never a pass.
+A struck-out result with "probe bug" measured a defect in the probe, not the host; the run file says what was wrong.
+
+| Run | Captured | Surface | OS | Device | WebView | Wire codec | product-sdk-host | Complete |
+|---|---|---|---|---|---|---|---|---|
+| [2026-09-19_codec1_host-0.19.1_android-16](runs/2026-09-19_codec1_host-0.19.1_android-16.json) | 2026-09-19T09:25:40.510Z | polkadot-app | Android 16.0.0 | Pixel 10 Pro XL | Chromium 152.0.7977.87 | 1 | 0.19.1 | no |
+
+## host.account
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `host.account.anonymousAlias` Ring VRF anonymous alias | unsupported · not-implemented |
+| `host.account.connect` wallet.connect + selectAccount | pass |
+| `host.account.deriveEntropy` deriveEntropy — determinism | pass |
+| `host.account.eip712` EIP-712 with an app-local burner key | pass |
+| `host.account.legacyAccounts` getLegacyAccounts | pass |
+| `host.account.productAccounts` Per-index product account derivation | pass |
+| `host.account.signMessage` wallet.signMessage | pass |
+| `host.account.userId` getUserId | pass |
+
+## host.chain
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `host.chain.genesis` Chain spec — genesis, name, properties | ~~timeout · never-settled~~ probe bug |
+| `host.chain.provider` Host JSON-RPC provider | ~~skip~~ probe bug |
+
+## host.chat
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `host.chat.list` Chat — list subscription | pass |
+
+## host.cloud
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `host.cloud.allowance` Request a Bulletin allowance | pass |
+| `host.cloud.read` Cloud storage read (no signature needed) | ~~fail · threw~~ probe bug |
+| `host.cloud.roundTrip` Fetch → CID verify → decrypt | ~~skip~~ probe bug |
+| `host.cloud.seal` Seal under a crypto-shred key (WebCrypto) | pass |
+| `host.cloud.upload` Cloud storage upload (canary, then payload) | ~~skip · spend-refused-by-allowlist~~ probe bug |
+
+## host.localStorage
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `host.localStorage.roundTrip` Host local storage — string, JSON, bytes | pass |
+
+## host.notifications
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `host.notifications.push` Host push notification | pass |
+
+## host.payment
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `host.payment.balance` Payment — balance subscription (read-only) | fail · wrong-result |
+
+## host.permissions
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `host.permissions.biometrics` requestDevicePermission("Biometrics") | pass |
+| `host.permissions.bluetooth` requestDevicePermission("Bluetooth") | pass |
+| `host.permissions.camera` requestDevicePermission("Camera") | pass |
+| `host.permissions.clipboard` requestDevicePermission("Clipboard") | pass |
+| `host.permissions.location` requestDevicePermission("Location") | pass |
+| `host.permissions.microphone` requestDevicePermission("Microphone") | pass |
+| `host.permissions.nfc` requestDevicePermission("NFC") | pass |
+| `host.permissions.notifications` requestDevicePermission("Notifications") | pass |
+| `host.permissions.openurl` requestDevicePermission("OpenUrl") | pass |
+| `host.permissions.remote` requestRemotePermission — all five variants | pass |
+
+## host.preimage
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `host.preimage.lookup` Preimage lookup (read-only) | fail · wrong-result |
+
+## host.statement
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `host.statement.createProof` Statement Store — createProofAuthorized | pass |
+| `host.statement.submit` Statement Store — submit | ~~skip · spend-refused-by-allowlist~~ probe bug |
+| `host.statement.subscribe` Statement Store — subscribe (read-only) | pass |
+
+## host.system
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `host.system.container` Host container detection | pass |
+| `host.system.createApp` createApp — construct the SDK App | pass |
+| `host.system.featureSupported` featureSupported / isChainSupported | pass |
+| `host.system.handshake` TrUApi handshake | pass |
+| `host.system.navigateTo` navigateTo | ~~skip~~ probe bug |
+| `host.system.version` App version — is one exposed at all? | unsupported · not-implemented |
+
+## host.theme
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `host.theme.subscribe` Theme subscription | pass |
+
+## web.compute
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `web.compute.serviceWorker` Service Worker registration | fail · threw |
+| `web.compute.sharedArrayBuffer` SharedArrayBuffer + Atomics | unsupported · not-implemented |
+| `web.compute.sharedWorker` SharedWorker | unsupported · not-implemented |
+| `web.compute.structuredClone` structuredClone type coverage | pass |
+| `web.compute.subtleCrypto` crypto.subtle algorithm matrix | pass |
+| `web.compute.wasm` WebAssembly compile + instantiate | pass |
+| `web.compute.wasmFeatures` WASM feature detection (SIMD, threads, exceptions, bulk memory) | pass |
+| `web.compute.worker` Dedicated Worker round-trip | pass |
+
+## web.connectivity
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `web.connectivity.bluetooth` Web Bluetooth — device picker | unsupported · not-implemented |
+| `web.connectivity.hid` WebHID — device picker | unsupported · not-implemented |
+| `web.connectivity.nfcRead` Web NFC — scan | blocked · os-denied |
+| `web.connectivity.nfcWrite` Web NFC — write | skip |
+| `web.connectivity.serial` Web Serial — port picker | unsupported · not-implemented |
+| `web.connectivity.usb` WebUSB — device picker | unsupported · not-implemented |
+
+## web.filesystem
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `web.filesystem.blob` Blob / File / object URL round-trip | pass |
+| `web.filesystem.fileInput` <input type=file> fallback | pass |
+| `web.filesystem.opfs` Origin Private File System | pass |
+| `web.filesystem.showDirectoryPicker` File System Access — directory picker | skip · user-dismissed |
+| `web.filesystem.showOpenFilePicker` File System Access — open picker | pass |
+| `web.filesystem.showSaveFilePicker` File System Access — save picker | skip · user-dismissed |
+
+## web.graphics
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `web.graphics.canvas2d` Canvas 2D + readback | pass |
+| `web.graphics.imageFormats` Image format decoding | unsupported · not-implemented |
+| `web.graphics.webAudio` Web Audio | pass |
+| `web.graphics.webgpu` WebGPU adapter + device | blocked · os-denied |
+
+## web.identity
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `web.identity.credentialManagement` Credential Management | pass |
+| `web.identity.digitalCredentials` Digital Credentials API | unsupported · not-implemented |
+| `web.identity.fedcm` FedCM | unsupported · not-implemented |
+| `web.identity.paymentHandler` Payment Handler | unsupported · not-implemented |
+| `web.identity.paymentRequest` Payment Request — canMakePayment | unsupported · not-implemented |
+| `web.identity.webauthnCreate` WebAuthn — create a credential | skip |
+| `web.identity.webauthnSupport` WebAuthn availability | unsupported · not-implemented |
+
+## web.media
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `web.media.camera` Camera capture (getUserMedia → still) | pass |
+| `web.media.displayMedia` Screen capture (getDisplayMedia) | unsupported · not-implemented |
+| `web.media.enumerateDevices` enumerateDevices — labels before grant | pass |
+| `web.media.imageCapture` ImageCapture | pass |
+| `web.media.mediaRecorder` MediaRecorder codec support | pass |
+| `web.media.microphone` Microphone capture | pass |
+| `web.media.pictureInPicture` Picture-in-Picture | blocked · policy-blocked-by-embedder |
+
+## web.net
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `web.net.beacon` sendBeacon | fail · wrong-result |
+| `web.net.connection` Network Information + online state | pass |
+| `web.net.csp` Content Security Policy in force | pass |
+| `web.net.eventSource` Server-Sent Events | pass |
+| `web.net.fetch` fetch — same-origin, CORS, streaming | pass |
+| `web.net.permissionsPolicy` Permissions-Policy introspection | pass |
+| `web.net.webTransport` WebTransport | pass |
+| `web.net.websocket` WebSocket connect | pass |
+
+## web.platform
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `web.platform.battery` Battery Status | pass |
+| `web.platform.gamepad` Gamepad API | pass |
+| `web.platform.locks` Web Locks | pass |
+| `web.platform.memory` Memory measurement | pass |
+| `web.platform.midi` Web MIDI (non-sysex) | pass |
+| `web.platform.permissionsApi` Permissions API coverage | pass |
+| `web.platform.scheduler` Prioritised task scheduling | pass |
+| `web.platform.speechRecognition` Speech Recognition | pass |
+| `web.platform.speechSynthesis` Speech Synthesis voices | unsupported · not-implemented |
+| `web.platform.timerResolution` performance.now() resolution | pass |
+| `web.platform.userAgentData` userAgentData high-entropy hints | pass |
+
+## web.sensors
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `web.sensors.absoluteOrientation` AbsoluteOrientationSensor (Generic Sensor) | pass |
+| `web.sensors.accelerometer` Accelerometer (Generic Sensor) | pass |
+| `web.sensors.ambientLight` AmbientLightSensor (Generic Sensor) | unsupported · not-implemented |
+| `web.sensors.deviceMotionEvents` DeviceMotion / DeviceOrientation events | pass |
+| `web.sensors.geolocation` Geolocation — one-shot fix | blocked · host-callback-missing |
+| `web.sensors.geolocationWatch` Geolocation — watchPosition | skip |
+| `web.sensors.gyroscope` Gyroscope (Generic Sensor) | pass |
+| `web.sensors.magnetometer` Magnetometer (Generic Sensor) | unsupported · not-implemented |
+| `web.sensors.relativeOrientation` RelativeOrientationSensor | pass |
+
+## web.storage
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `web.storage.cacheStorage` CacheStorage round-trip | unsupported · not-implemented |
+| `web.storage.cookies` Cookies + Cookie Store API | blocked · policy-blocked-by-embedder |
+| `web.storage.indexedDb` IndexedDB round-trip | unsupported · not-implemented |
+| `web.storage.quota` Quota estimate + persistence request | pass |
+| `web.storage.storageAccessApi` Storage Access API | pass |
+| `web.storage.webStorage` localStorage + sessionStorage round-trip | pass |
+
+## web.ux
+
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16 |
+|---|---|
+| `web.ux.badging` App Badging | pass |
+| `web.ux.clipboardRead` Clipboard read | blocked · os-denied |
+| `web.ux.clipboardWrite` Clipboard write | pass |
+| `web.ux.contactPicker` Contact Picker | fail · threw |
+| `web.ux.eyeDropper` EyeDropper | unsupported · not-implemented |
+| `web.ux.fullscreen` Fullscreen | blocked · policy-blocked-by-embedder |
+| `web.ux.idleDetection` Idle Detection | blocked · os-denied |
+| `web.ux.notifications` Notifications | unsupported · not-implemented |
+| `web.ux.orientationLock` Screen orientation lock | unsupported · not-implemented |
+| `web.ux.push` Push API | fail · not-implemented |
+| `web.ux.share` Web Share — text and URL | unsupported · not-implemented |
+| `web.ux.shareFiles` Web Share — files | skip |
+| `web.ux.vibrate` Vibration | pass |
+| `web.ux.viewTransitions` View Transitions | pass |
+| `web.ux.virtualKeyboard` VirtualKeyboard API | pass |
+| `web.ux.wakeLock` Screen Wake Lock | pass |

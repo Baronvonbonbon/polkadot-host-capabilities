@@ -1,0 +1,24 @@
+{
+  "productId": "sondeprobes",
+  "sdk": {
+    "@parity/product-sdk": "0.27.0",
+    "@parity/product-sdk-host": "0.19.1",
+    "@parity/product-sdk-keys": "0.3.24",
+    "@parity/product-sdk-statement-store": "0.6.9",
+    "@parity/product-sdk-terminal": "0.8.2",
+    "@parity/truapi": "0.13.1"
+  },
+  "notes": [
+    "SDK versions are sonde's exact pins at this build (its package.json); the markdown report does not carry them.",
+    "Picked file names are redacted."
+  ],
+  "retracted": {
+    "host.chain.genesis": "sonde's host.chain.genesis asked first for a genesis hash that exists on no chain (it shared only its first seven hex digits with Paseo Asset Hub's), and the host never answered for it. Fixed in sonde on 2026-09-19: real hashes, each with its own deadline.",
+    "host.chain.provider": "Not measured: skipped because host.chain.genesis failed, which was a probe bug.",
+    "host.cloud.upload": "Not measured: refused because no genesis resolved (the host.chain.genesis probe bug) and, separately, sonde's spend allowlist was empty. Both fixed in sonde on 2026-09-19.",
+    "host.cloud.roundTrip": "Not measured: needs host.cloud.upload, which was not run.",
+    "host.statement.submit": "Not measured: refused because no genesis resolved (the host.chain.genesis probe bug) and sonde's spend allowlist was empty. Both fixed in sonde on 2026-09-19.",
+    "host.cloud.read": "sonde read a SHA-256 (bafybei…) CID. The host's lookup finds BLAKE2b-256 content only (almanac P7, 2026-09-14), so the read could never succeed. Fixed in sonde on 2026-09-19: it reads a BLAKE2b-256 fixture.",
+    "host.system.navigateTo": "Skipped because sonde navigated to its own URL, and an honoured navigation to the page's own URL reloads it. That is the host doing what it was asked. Fixed in sonde on 2026-09-19: it opens an outside URL."
+  }
+}

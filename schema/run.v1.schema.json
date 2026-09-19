@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/schema/run.v1.schema.json",
+  "title": "One run of a capability probe inside the Polkadot app",
+  "description": "A record of what a Product could and could not do in one runtime. The key names the runtime by what decides compatibility — the date, the host wire codec, the host SDK version and the OS — because no host API exposes the Polkadot app's own version.",
+  "type": "object",
+  "required": [
+    "schema",
+    "key",
+    "capturedAt",
+    "complete",
+    "tool",
+    "runtime",
+    "host",
+    "results"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "polkadot-host-capabilities/run@1"
+    },
+    "key": {
+      "description": "<date>_codec<wire codec>_host-<product-sdk-host version>_<os>-<major>, e.g. 2026-09-19_codec1_host-0.19.1_android-16. Also the file name.",
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}_codec\\d+_host-[0-9A-Za-z.\\-]+_[a-z]+-[0-9A-Za-z]+$"
+    },
+    "capturedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "complete": {
+      "description": "false when the report was cut off or some probes were not run for reasons outside the probe (say which in notes).",
+      "type": "boolean"
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tool": {
+      "type": "object",
+      "required": [
+        "name",
+        "version"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The prober, e.g. sonde."
+        },
+        "version": {
+          "type": "string"
+        },
+        "build": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string",
+          "description": "Where the prober's code lives, so any result can be checked against how it was measured."
+        },
+        "runId": {
+          "type": "string"
+        },
+        "productId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The .dot label the prober ran under. Host state (allowances, product accounts, storage) is keyed by it."
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "required": [
+        "surface",
+        "os",
+        "device"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "surface": {
+          "enum": [
+            "polkadot-app",
+            "gateway-iframe",
+            "plain-browser"
+          ]
+        },
+        "os": {
+          "type": "string",
+          "description": "e.g. Android 16.0.0"
+        },
+        "device": {
+          "type": "string"
+        },
+        "webview": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Engine version from the user agent. On Android this is the system WebView, updated separately from the Polkadot app — not an app-version proxy."
+        },
+        "appVersion": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The Polkadot app version if a person read it off the phone. No host API reports it."
+        }
+      }
+    },
+    "host": {
+      "type": "object",
+      "required": [
+        "wireCodec"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "wireCodec": {
+          "type": "integer",
+          "description": "The TrUAPI wire codec the Product spoke. The app must answer the same one or every host call hangs."
+        },
+        "truapi": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "sdk": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Exact package versions the Product was built with."
+        }
+      }
+    },
+    "results": {
+      "description": "Keyed by stable probe id (e.g. web.sensors.geolocation).",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^(host|web)\\.[A-Za-z0-9_.\\-]+$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "What the probe checks, in words."
+          },
+          "status": {
+            "enum": [
+              "pass",
+              "unsupported",
+              "blocked",
+              "fail",
+              "timeout",
+              "crashed",
+              "skip"
+            ]
+          },
+          "diagnosis": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ms": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "detail": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "string",
+            "description": "Raw output the probe attached: permission states before and after, error bodies. Redacted of addresses and file names."
+          },
+          "measures": {
+            "type": "object",
+            "description": "Named limits the probe measured (bytes accepted, seconds taken, counts). Values only; the probe's page says what each name means.",
+            "additionalProperties": {
+              "type": [
+                "number",
+                "string",
+                "boolean"
+              ]
+            }
+          },
+          "retracted": {
+            "type": "string",
+            "description": "Set when the result measured a defect in the probe, not the host — a wrong fixture, a call that could not succeed. Says what was wrong and where it was fixed. The matrix shows the result struck out, so it is never read as a host finding."
+          }
+        }
+      }
+    },
+    "totals": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer"
+      }
+    }
+  }
+}

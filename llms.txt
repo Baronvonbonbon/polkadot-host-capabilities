@@ -1,0 +1,64 @@
+# Polkadot host capabilities
+
+> What a Product (a web app running inside the Polkadot app) can and cannot do. Each answer is
+> measured from inside the app on a real phone, with working code for each capability. Results are
+> keyed by date, TrUAPI wire codec, product-sdk-host version and OS, because no host API reports
+> the app's version. Everything here is dated: re-check against the newest run before relying on a
+> "not available".
+
+Read this first:
+
+- Build your SDK against the wire codec the app speaks. As of 2026-09-19 the Android app answers
+  codec 1 only: pin @parity/product-sdk-host 0.19.1 and @parity/truapi 0.13.1 exactly. On a mismatch
+  every host call hangs.
+- Give every host call a deadline. Many never settle when they can't do what was asked.
+- Location is not available to a Product (the host grants it, and the WebView still refuses).
+  Design flows that need no GPS.
+- Store on Bulletin with getPreimageManager().submit(), not cloudStorage.upload (Invalid: Payment).
+  Data is public by BLAKE2b-256 hash and lasts about two weeks.
+- The Statement Store holds 512 bytes per statement and about 1 KiB per account. Use it to
+  rendezvous; it reaches other phones.
+- Nothing leaves the app as a file. Export by copying text.
+- IndexedDB, CacheStorage, service workers, web push and Notification are absent. Use host local
+  storage and host notifications.
+- Publish with a local deploy key, not the phone's signer.
+
+## Capabilities
+
+- [Location](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/location.md): not available; how to detect it, and a design that settles without GPS
+- [Bulletin storage](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/bulletin-storage.md): uploads through the host, costs, sizes, retention, lookups
+- [Statement Store](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/statement-store.md): signed 512-byte messages between phones; limits and code
+- [Permissions](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/permissions.md): host permissions and web permissions, and why a host grant doesn't open the web API
+- [Identity and accounts](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/identity-and-accounts.md): product accounts, deterministic entropy, signing, EIP-712
+- [Chain access](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/chain-access.md): devnet chains and their genesis hashes, chain specs, the host RPC provider
+- [Notifications](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/notifications.md): host notifications, including scheduled ones with the app closed
+- [Storage on the device](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/local-storage.md): host local storage, and which web storage exists
+- [Payments](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/payments.md): the payment manager's balance never arrives yet
+- [App and system](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/app-and-system.md): detection, handshake, app version, navigateTo, theme, chat, new builds
+- [Files and sharing](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/files-and-sharing.md): picking works, downloads and share don't, clipboard write only
+- [Media and calls](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/media-and-calls.md): camera, microphone, QR codes, WebRTC status
+- [Compute and crypto](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/compute-and-crypto.md): WASM, WebCrypto, workers, no SharedArrayBuffer; timings on a phone
+- [Network](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/network.md): fetch, WebSocket, sendBeacon refused, the devnet IPFS gateway
+- [Sensors and hardware](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/sensors-and-hardware.md): motion sensors work; Bluetooth, USB, NFC don't
+- [UI and display](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/capabilities/ui-and-display.md): no fullscreen, no AVIF, wake lock works
+
+## Pitfalls
+
+- [Wire codec](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/pitfalls/wire-codec.md): the exact SDK pins that work with the current app
+- [Host calls can hang](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/pitfalls/host-calls-can-hang.md): which calls go silent, and the deadlines to use
+- [SDK gotchas](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/pitfalls/sdk-gotchas.md): two Result conventions, the BulletinAllowance spelling, createApp's environment
+- [Deploy with a key](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/pitfalls/deploy-with-a-key.md): why phone-signed .dot names get stranded, and the fix
+- [DotNS registrar moved](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/pitfalls/dotns-registrar-moved.md): current devnet DotNS contract addresses
+
+## Data
+
+- [Matrix](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/matrix.md): every probe in every run
+- [Run schema](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/schema/run.v1.schema.json): the format of runs/*.json
+- [Runs](https://github.com/Baronvonbonbon/polkadot-host-capabilities/tree/main/runs): one JSON file per measured run
+
+## Optional
+
+- [Everything in one file](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/llms-full.txt)
+- [sonde](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/sources/sonde.md): the in-app prober, and how to add a run
+- [almanac's probe](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/sources/almanac-probe.md): P1–P14, measured 2026-09-13 to 17
+- [FARE](https://raw.githubusercontent.com/Baronvonbonbon/polkadot-host-capabilities/main/sources/fare.md): GPS-free settlement, Statement Store signalling, Bulletin as evidence
