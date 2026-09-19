@@ -6,6 +6,7 @@ A struck-out result with "probe bug" measured a defect in the probe, not the hos
 
 | Run | Captured | Surface | OS | Device | WebView | Wire codec | product-sdk-host | Complete |
 |---|---|---|---|---|---|---|---|---|
+| [2026-09-19_codec1_host-0.19.1_android-16_1406](runs/2026-09-19_codec1_host-0.19.1_android-16_1406.json) | 2026-09-19T14:06:00.501Z | polkadot-app | Android 16.0.0 | Pixel 10 Pro XL | Chromium 152.0.7977.87 | 1 | 0.19.1 | yes |
 | [2026-09-19_codec1_host-0.19.1_android-16_1131](runs/2026-09-19_codec1_host-0.19.1_android-16_1131.json) | 2026-09-19T11:31:01.212Z | polkadot-app | Android 16.0.0 | Pixel 10 Pro XL | Chromium 152.0.7977.87 | 1 | 0.19.1 | yes |
 | [2026-09-19_codec1_host-0.19.1_android-16_1053](runs/2026-09-19_codec1_host-0.19.1_android-16_1053.json) | 2026-09-19T10:53:29.193Z | polkadot-app | Android 16.0.0 | Pixel 10 Pro XL | Chromium 152.0.7977.87 | 1 | 0.19.1 | yes |
 | [2026-09-19_codec1_host-0.19.1_android-16_1038](runs/2026-09-19_codec1_host-0.19.1_android-16_1038.json) | 2026-09-19T10:38:07.559Z | polkadot-app | Android 16.0.0 | Pixel 10 Pro XL | Chromium 152.0.7977.87 | 1 | 0.19.1 | no |
@@ -14,276 +15,276 @@ A struck-out result with "probe bug" measured a defect in the probe, not the hos
 
 ## host.account
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `host.account.anonymousAlias` Ring VRF anonymous alias | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `host.account.connect` wallet.connect + selectAccount | pass | pass | pass | pass | pass |
-| `host.account.deriveEntropy` deriveEntropy — determinism | pass | pass | pass | pass | pass |
-| `host.account.eip712` EIP-712 with an app-local burner key | pass | pass | pass | pass | pass |
-| `host.account.legacyAccounts` getLegacyAccounts | pass | pass | pass | pass | pass |
-| `host.account.productAccounts` Per-index product account derivation | pass | pass | pass | pass | pass |
-| `host.account.signMessage` wallet.signMessage | pass | pass | pass | pass | pass |
-| `host.account.userId` getUserId | pass | pass | pass | pass | pass |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `host.account.anonymousAlias` Ring VRF anonymous alias | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `host.account.connect` wallet.connect + selectAccount | pass | pass | pass | pass | pass | pass |
+| `host.account.deriveEntropy` deriveEntropy — determinism | pass | pass | pass | pass | pass | pass |
+| `host.account.eip712` EIP-712 with an app-local burner key | pass | pass | pass | pass | pass | pass |
+| `host.account.legacyAccounts` getLegacyAccounts | pass | pass | pass | pass | pass | pass |
+| `host.account.productAccounts` Per-index product account derivation | pass | pass | pass | pass | pass | pass |
+| `host.account.signMessage` wallet.signMessage | pass | pass | pass | pass | pass | pass |
+| `host.account.userId` getUserId | pass | pass | pass | pass | pass | pass |
 
 ## host.chain
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `host.chain.genesis` Chain spec — genesis, name, properties | pass | pass | pass | pass | ~~timeout · never-settled~~ probe bug |
-| `host.chain.provider` Host JSON-RPC provider | pass | pass | pass | pass | ~~skip~~ probe bug |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `host.chain.genesis` Chain spec — genesis, name, properties | unsupported · chain-not-supported | pass | pass | pass | pass | ~~timeout · never-settled~~ probe bug |
+| `host.chain.provider` Host JSON-RPC provider | skip | pass | pass | pass | pass | ~~skip~~ probe bug |
 
 ## host.chat
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `host.chat.list` Chat — list subscription | pass | pass | pass | pass | pass |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `host.chat.list` Chat — list subscription | pass | pass | pass | pass | pass | pass |
 
 ## host.cloud
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `host.cloud.allowance` Request a Bulletin allowance | pass | pass | pass | pass | pass |
-| `host.cloud.read` Cloud storage read (no signature needed) | pass | pass | pass | pass | ~~fail · threw~~ probe bug |
-| `host.cloud.roundTrip` Fetch → CID verify → decrypt | skip | skip | ~~skip~~ probe bug | ~~skip~~ probe bug | ~~skip~~ probe bug |
-| `host.cloud.seal` Seal under a crypto-shred key (WebCrypto) | pass | pass | pass | pass | pass |
-| `host.cloud.upload` Cloud storage upload (canary, then payload) | fail · allowance-missing | fail · allowance-missing | ~~skip · spend-refused-by-allowlist~~ probe bug | ~~skip · spend-refused-by-allowlist~~ probe bug | ~~skip · spend-refused-by-allowlist~~ probe bug |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `host.cloud.allowance` Request a Bulletin allowance | timeout · never-settled | pass | pass | pass | pass | pass |
+| `host.cloud.read` Cloud storage read (no signature needed) | pass | pass | pass | pass | pass | ~~fail · threw~~ probe bug |
+| `host.cloud.roundTrip` Fetch → CID verify → decrypt | skip | skip | skip | ~~skip~~ probe bug | ~~skip~~ probe bug | ~~skip~~ probe bug |
+| `host.cloud.seal` Seal under a crypto-shred key (WebCrypto) | pass | pass | pass | pass | pass | pass |
+| `host.cloud.upload` Cloud storage upload (canary, then payload) | ~~skip · spend-refused-by-allowlist~~ probe bug | fail · allowance-missing | fail · allowance-missing | ~~skip · spend-refused-by-allowlist~~ probe bug | ~~skip · spend-refused-by-allowlist~~ probe bug | ~~skip · spend-refused-by-allowlist~~ probe bug |
 
 ## host.limits
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `host.limits.bridgePayload` Largest message the host accepts | ~~fail · wrong-result~~ probe bug | — | — | — | — |
-| `host.limits.bulletinQuota` Bulletin quota — what happens when it runs out | skip | — | — | — | — |
-| `host.limits.concurrency` Many host calls at once | pass (answered_10 10, ms_10 175, answered_50 50) | — | — | — | — |
-| `host.limits.localStorageCeiling` Host local storage — largest record | skip | — | — | — | — |
-| `host.limits.notifications` Notification limits — text length, how many, how far ahead | pass (longestTextAccepted 100000, scheduledAccepted 30) | — | — | — | — |
-| `host.limits.preimageSize` Largest single Bulletin upload (2, 3, 4 MiB) | skip | — | — | — | — |
-| `host.limits.retention` Bulletin retention — can earlier uploads still be read? | skip | — | — | — | — |
-| `host.limits.statementCapacity` Statement Store — how many one account holds | skip | — | — | — | — |
-| `host.limits.statementExpiry` Statement Store — longest expiry | skip | — | — | — | — |
-| `host.limits.statementLatency` Statement Store — time from submit to delivery | ~~fail · wrong-result~~ probe bug | — | — | — | — |
-| `host.limits.statementSize` Statement Store — exact size limit | ~~fail · wrong-result~~ probe bug | — | — | — | — |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `host.limits.bridgePayload` Largest message the host accepts | pass (largestOkBytes 4194304) | ~~fail · wrong-result~~ probe bug | — | — | — | — |
+| `host.limits.bulletinQuota` Bulletin quota — what happens when it runs out | skip | skip | — | — | — | — |
+| `host.limits.concurrency` Many host calls at once | pass (answered_10 10, ms_10 253, answered_50 50) | pass (answered_10 10, ms_10 175, answered_50 50) | — | — | — | — |
+| `host.limits.localStorageCeiling` Host local storage — largest record | skip | skip | — | — | — | — |
+| `host.limits.notifications` Notification limits — text length, how many, how far ahead | timeout · never-settled | pass (longestTextAccepted 100000, scheduledAccepted 30) | — | — | — | — |
+| `host.limits.preimageSize` Largest single Bulletin upload (2, 3, 4 MiB) | skip | skip | — | — | — | — |
+| `host.limits.retention` Bulletin retention — can earlier uploads still be read? | pass (tracked 2, found 2, oldestFoundDays 0.03) | skip | — | — | — | — |
+| `host.limits.statementCapacity` Statement Store — how many one account holds | skip | skip | — | — | — | — |
+| `host.limits.statementExpiry` Statement Store — longest expiry | skip | skip | — | — | — | — |
+| `host.limits.statementLatency` Statement Store — time from submit to delivery | skip | ~~fail · wrong-result~~ probe bug | — | — | — | — |
+| `host.limits.statementSize` Statement Store — exact size limit | skip | ~~fail · wrong-result~~ probe bug | — | — | — | — |
 
 ## host.localStorage
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `host.localStorage.roundTrip` Host local storage — string, JSON, bytes | pass | pass | pass | pass | pass |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `host.localStorage.roundTrip` Host local storage — string, JSON, bytes | pass | pass | pass | pass | pass | pass |
 
 ## host.notifications
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `host.notifications.push` Host push notification | pass | pass | pass | pass | pass |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `host.notifications.push` Host push notification | pass | pass | pass | pass | pass | pass |
 
 ## host.payment
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `host.payment.balance` Payment — balance subscription (read-only) | fail · wrong-result | fail · wrong-result | fail · wrong-result | fail · wrong-result | fail · wrong-result |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `host.payment.balance` Payment — balance subscription (read-only) | fail · wrong-result | fail · wrong-result | fail · wrong-result | fail · wrong-result | fail · wrong-result | fail · wrong-result |
 
 ## host.permissions
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `host.permissions.biometrics` requestDevicePermission("Biometrics") | pass | pass | pass | pass | pass |
-| `host.permissions.bluetooth` requestDevicePermission("Bluetooth") | pass | pass | pass | pass | pass |
-| `host.permissions.camera` requestDevicePermission("Camera") | pass | pass | pass | pass | pass |
-| `host.permissions.clipboard` requestDevicePermission("Clipboard") | pass | pass | pass | pass | pass |
-| `host.permissions.location` requestDevicePermission("Location") | pass | pass | pass | pass | pass |
-| `host.permissions.microphone` requestDevicePermission("Microphone") | pass | pass | pass | pass | pass |
-| `host.permissions.nfc` requestDevicePermission("NFC") | pass | pass | pass | pass | pass |
-| `host.permissions.notifications` requestDevicePermission("Notifications") | pass | pass | pass | pass | pass |
-| `host.permissions.openurl` requestDevicePermission("OpenUrl") | pass | pass | pass | pass | pass |
-| `host.permissions.remote` requestRemotePermission — all five variants | pass | pass | pass | pass | pass |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `host.permissions.biometrics` requestDevicePermission("Biometrics") | pass | pass | pass | pass | pass | pass |
+| `host.permissions.bluetooth` requestDevicePermission("Bluetooth") | pass | pass | pass | pass | pass | pass |
+| `host.permissions.camera` requestDevicePermission("Camera") | pass | pass | pass | pass | pass | pass |
+| `host.permissions.clipboard` requestDevicePermission("Clipboard") | pass | pass | pass | pass | pass | pass |
+| `host.permissions.location` requestDevicePermission("Location") | pass | pass | pass | pass | pass | pass |
+| `host.permissions.microphone` requestDevicePermission("Microphone") | pass | pass | pass | pass | pass | pass |
+| `host.permissions.nfc` requestDevicePermission("NFC") | pass | pass | pass | pass | pass | pass |
+| `host.permissions.notifications` requestDevicePermission("Notifications") | pass | pass | pass | pass | pass | pass |
+| `host.permissions.openurl` requestDevicePermission("OpenUrl") | pass | pass | pass | pass | pass | pass |
+| `host.permissions.remote` requestRemotePermission — all five variants | pass | pass | pass | pass | pass | pass |
 
 ## host.preimage
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `host.preimage.lookup` Preimage lookup (read-only) | fail · wrong-result | fail · wrong-result | fail · wrong-result | fail · wrong-result | fail · wrong-result |
-| `host.preimage.submit` Preimage submit — upload through the host, then read it back | ~~skip~~ probe bug | — | — | — | — |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `host.preimage.lookup` Preimage lookup (read-only) | pass | fail · wrong-result | fail · wrong-result | fail · wrong-result | fail · wrong-result | fail · wrong-result |
+| `host.preimage.submit` Preimage submit — upload through the host, then read it back | ~~skip · spend-refused-by-allowlist~~ probe bug | ~~skip~~ probe bug | — | — | — | — |
 
 ## host.statement
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `host.statement.createProof` Statement Store — createProofAuthorized | pass | pass | pass | pass | pass |
-| `host.statement.submit` Statement Store — submit | pass | pass | ~~skip · spend-refused-by-allowlist~~ probe bug | ~~skip · spend-refused-by-allowlist~~ probe bug | ~~skip · spend-refused-by-allowlist~~ probe bug |
-| `host.statement.subscribe` Statement Store — subscribe (read-only) | pass | pass | pass | pass | pass |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `host.statement.createProof` Statement Store — createProofAuthorized | pass | pass | pass | pass | pass | pass |
+| `host.statement.submit` Statement Store — submit | ~~skip · spend-refused-by-allowlist~~ probe bug | pass | pass | ~~skip · spend-refused-by-allowlist~~ probe bug | ~~skip · spend-refused-by-allowlist~~ probe bug | ~~skip · spend-refused-by-allowlist~~ probe bug |
+| `host.statement.subscribe` Statement Store — subscribe (read-only) | pass | pass | pass | pass | pass | pass |
 
 ## host.system
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `host.system.container` Host container detection | pass | pass | pass | pass | pass |
-| `host.system.createApp` createApp — construct the SDK App | pass | pass | pass | pass | pass |
-| `host.system.featureSupported` featureSupported / isChainSupported | pass | pass | pass | pass | pass |
-| `host.system.handshake` TrUApi handshake | pass | pass | pass | pass | pass |
-| `host.system.navigateTo` navigateTo | pass | pass | pass | pass | ~~skip~~ probe bug |
-| `host.system.version` App version — is one exposed at all? | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `host.system.container` Host container detection | pass | pass | pass | pass | pass | pass |
+| `host.system.createApp` createApp — construct the SDK App | pass | pass | pass | pass | pass | pass |
+| `host.system.featureSupported` featureSupported / isChainSupported | pass | pass | pass | pass | pass | pass |
+| `host.system.handshake` TrUApi handshake | pass | pass | pass | pass | pass | pass |
+| `host.system.navigateTo` navigateTo | pass | pass | pass | pass | pass | ~~skip~~ probe bug |
+| `host.system.version` App version — is one exposed at all? | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
 
 ## host.theme
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `host.theme.subscribe` Theme subscription | pass | pass | pass | pass | pass |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `host.theme.subscribe` Theme subscription | pass | pass | pass | pass | pass | pass |
 
 ## web.compute
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `web.compute.serviceWorker` Service Worker registration | fail · threw | fail · threw | fail · threw | fail · threw | fail · threw |
-| `web.compute.sharedArrayBuffer` SharedArrayBuffer + Atomics | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.compute.sharedWorker` SharedWorker | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.compute.structuredClone` structuredClone type coverage | pass | pass | pass | pass | pass |
-| `web.compute.subtleCrypto` crypto.subtle algorithm matrix | pass | pass | pass | pass | pass |
-| `web.compute.wasm` WebAssembly compile + instantiate | pass | pass | pass | pass | pass |
-| `web.compute.wasmFeatures` WASM feature detection (SIMD, threads, exceptions, bulk memory) | pass | pass | pass | pass | pass |
-| `web.compute.worker` Dedicated Worker round-trip | pass | pass | pass | pass | pass |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `web.compute.serviceWorker` Service Worker registration | fail · threw | fail · threw | fail · threw | fail · threw | fail · threw | fail · threw |
+| `web.compute.sharedArrayBuffer` SharedArrayBuffer + Atomics | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.compute.sharedWorker` SharedWorker | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.compute.structuredClone` structuredClone type coverage | pass | pass | pass | pass | pass | pass |
+| `web.compute.subtleCrypto` crypto.subtle algorithm matrix | pass | pass | pass | pass | pass | pass |
+| `web.compute.wasm` WebAssembly compile + instantiate | pass | pass | pass | pass | pass | pass |
+| `web.compute.wasmFeatures` WASM feature detection (SIMD, threads, exceptions, bulk memory) | pass | pass | pass | pass | pass | pass |
+| `web.compute.worker` Dedicated Worker round-trip | pass | pass | pass | pass | pass | pass |
 
 ## web.connectivity
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `web.connectivity.bluetooth` Web Bluetooth — device picker | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.connectivity.hid` WebHID — device picker | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.connectivity.nfcRead` Web NFC — scan | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied |
-| `web.connectivity.nfcWrite` Web NFC — write | skip | skip | skip | skip | skip |
-| `web.connectivity.serial` Web Serial — port picker | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.connectivity.usb` WebUSB — device picker | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `web.connectivity.bluetooth` Web Bluetooth — device picker | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.connectivity.hid` WebHID — device picker | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.connectivity.nfcRead` Web NFC — scan | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied |
+| `web.connectivity.nfcWrite` Web NFC — write | skip | skip | skip | skip | skip | skip |
+| `web.connectivity.serial` Web Serial — port picker | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.connectivity.usb` WebUSB — device picker | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
 
 ## web.filesystem
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `web.filesystem.blob` Blob / File / object URL round-trip | pass | pass | pass | pass | pass |
-| `web.filesystem.fileInput` <input type=file> fallback | pass | pass | pass | pass | pass |
-| `web.filesystem.opfs` Origin Private File System | pass | pass | pass | pass | pass |
-| `web.filesystem.showDirectoryPicker` File System Access — directory picker | skip · user-dismissed | skip · user-dismissed | skip · user-dismissed | skip · user-dismissed | skip · user-dismissed |
-| `web.filesystem.showOpenFilePicker` File System Access — open picker | pass | pass | pass | pass | pass |
-| `web.filesystem.showSaveFilePicker` File System Access — save picker | skip · user-dismissed | skip · user-dismissed | skip · user-dismissed | skip · user-dismissed | skip · user-dismissed |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `web.filesystem.blob` Blob / File / object URL round-trip | pass | pass | pass | pass | pass | pass |
+| `web.filesystem.fileInput` <input type=file> fallback | pass | pass | pass | pass | pass | pass |
+| `web.filesystem.opfs` Origin Private File System | pass | pass | pass | pass | pass | pass |
+| `web.filesystem.showDirectoryPicker` File System Access — directory picker | skip · user-dismissed | skip · user-dismissed | skip · user-dismissed | skip · user-dismissed | skip · user-dismissed | skip · user-dismissed |
+| `web.filesystem.showOpenFilePicker` File System Access — open picker | pass | pass | pass | pass | pass | pass |
+| `web.filesystem.showSaveFilePicker` File System Access — save picker | skip · user-dismissed | skip · user-dismissed | skip · user-dismissed | skip · user-dismissed | skip · user-dismissed | skip · user-dismissed |
 
 ## web.graphics
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `web.graphics.canvas2d` Canvas 2D + readback | pass | pass | pass | pass | pass |
-| `web.graphics.imageFormats` Image format decoding | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.graphics.offscreenCanvas` OffscreenCanvas in a worker | pass | pass | pass | pass | — |
-| `web.graphics.webAudio` Web Audio | pass | pass | pass | pass | pass |
-| `web.graphics.webCodecs` WebCodecs configuration support | pass | pass | pass | pass | — |
-| `web.graphics.webgl` WebGL 1 + 2 | pass | pass | pass | pass | — |
-| `web.graphics.webgpu` WebGPU adapter + device | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied |
-| `web.graphics.webrtc` WebRTC peer connection | pass | pass | — | pass | — |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `web.graphics.canvas2d` Canvas 2D + readback | pass | pass | pass | pass | pass | pass |
+| `web.graphics.imageFormats` Image format decoding | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.graphics.offscreenCanvas` OffscreenCanvas in a worker | pass | pass | pass | pass | pass | — |
+| `web.graphics.webAudio` Web Audio | pass | pass | pass | pass | pass | pass |
+| `web.graphics.webCodecs` WebCodecs configuration support | pass | pass | pass | pass | pass | — |
+| `web.graphics.webgl` WebGL 1 + 2 | pass | pass | pass | pass | pass | — |
+| `web.graphics.webgpu` WebGPU adapter + device | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied |
+| `web.graphics.webrtc` WebRTC peer connection | pass | pass | pass | — | pass | — |
 
 ## web.identity
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `web.identity.credentialManagement` Credential Management | pass | pass | pass | pass | pass |
-| `web.identity.digitalCredentials` Digital Credentials API | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.identity.fedcm` FedCM | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.identity.paymentHandler` Payment Handler | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.identity.paymentRequest` Payment Request — canMakePayment | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.identity.webauthnCreate` WebAuthn — create a credential | skip | skip | skip | skip | skip |
-| `web.identity.webauthnSupport` WebAuthn availability | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `web.identity.credentialManagement` Credential Management | pass | pass | pass | pass | pass | pass |
+| `web.identity.digitalCredentials` Digital Credentials API | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.identity.fedcm` FedCM | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.identity.paymentHandler` Payment Handler | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.identity.paymentRequest` Payment Request — canMakePayment | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.identity.webauthnCreate` WebAuthn — create a credential | skip | skip | skip | skip | skip | skip |
+| `web.identity.webauthnSupport` WebAuthn availability | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
 
 ## web.limits
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `web.limits.backgrounding` Backgrounding — switch away for 30 s, then come back | skip | — | — | — | — |
-| `web.limits.clipboardSize` Clipboard — how much text can be copied | pass (largestAcceptedBytes 5000000) | — | — | — | — |
-| `web.limits.groth16` Groth16 proof on the phone (a real proximity circuit) | skip | — | — | — | — |
-| `web.limits.memoryCeiling` JavaScript memory — how much can be allocated | skip | — | — | — | — |
-| `web.limits.wasmMemory` WebAssembly memory — how far it grows | skip | — | — | — | — |
-| `web.limits.webrtcLoopback` WebRTC data channel — open, throughput, signalling size | pass (offerSdpBytes 684, essentialBytes 387, candidates 2) | — | — | — | — |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `web.limits.backgrounding` Backgrounding — switch away for 30 s, then come back | skip | skip | — | — | — | — |
+| `web.limits.clipboardSize` Clipboard — how much text can be copied | pass (largestAcceptedBytes 5000000) | pass (largestAcceptedBytes 5000000) | — | — | — | — |
+| `web.limits.groth16` Groth16 proof on the phone (a real proximity circuit) | skip | skip | — | — | — | — |
+| `web.limits.memoryCeiling` JavaScript memory — how much can be allocated | skip | skip | — | — | — | — |
+| `web.limits.wasmMemory` WebAssembly memory — how far it grows | skip | skip | — | — | — | — |
+| `web.limits.webrtcLoopback` WebRTC data channel — open, throughput, signalling size | pass (offerSdpBytes 684, essentialBytes 387, candidates 2) | pass (offerSdpBytes 684, essentialBytes 387, candidates 2) | — | — | — | — |
 
 ## web.media
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `web.media.barcodeDetector` BarcodeDetector — decode a QR code natively | pass (decodeMs 174, formats 13) | — | — | — | — |
-| `web.media.camera` Camera capture (getUserMedia → still) | pass | pass | pass | pass | pass |
-| `web.media.displayMedia` Screen capture (getDisplayMedia) | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.media.enumerateDevices` enumerateDevices — labels before grant | pass | pass | pass | pass | pass |
-| `web.media.imageCapture` ImageCapture | pass | pass | pass | pass | pass |
-| `web.media.mediaRecorder` MediaRecorder codec support | pass | pass | pass | pass | pass |
-| `web.media.microphone` Microphone capture | pass | pass | pass | pass | pass |
-| `web.media.pictureInPicture` Picture-in-Picture | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `web.media.barcodeDetector` BarcodeDetector — decode a QR code natively | pass (decodeMs 181, formats 13) | pass (decodeMs 174, formats 13) | — | — | — | — |
+| `web.media.camera` Camera capture (getUserMedia → still) | pass | pass | pass | pass | pass | pass |
+| `web.media.displayMedia` Screen capture (getDisplayMedia) | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.media.enumerateDevices` enumerateDevices — labels before grant | pass | pass | pass | pass | pass | pass |
+| `web.media.imageCapture` ImageCapture | pass | pass | pass | pass | pass | pass |
+| `web.media.mediaRecorder` MediaRecorder codec support | pass | pass | pass | pass | pass | pass |
+| `web.media.microphone` Microphone capture | pass | pass | pass | pass | pass | pass |
+| `web.media.pictureInPicture` Picture-in-Picture | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder |
 
 ## web.net
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `web.net.beacon` sendBeacon | fail · wrong-result | fail · wrong-result | fail · wrong-result | fail · wrong-result | fail · wrong-result |
-| `web.net.connection` Network Information + online state | pass | pass | pass | pass | pass |
-| `web.net.csp` Content Security Policy in force | pass | pass | pass | pass | pass |
-| `web.net.eventSource` Server-Sent Events | pass | pass | pass | pass | pass |
-| `web.net.fetch` fetch — same-origin, CORS, streaming | pass | pass | pass | pass | pass |
-| `web.net.permissionsPolicy` Permissions-Policy introspection | pass | pass | pass | pass | pass |
-| `web.net.webTransport` WebTransport | pass | pass | pass | pass | pass |
-| `web.net.websocket` WebSocket connect | pass | pass | pass | pass | pass |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `web.net.beacon` sendBeacon | fail · wrong-result | fail · wrong-result | fail · wrong-result | fail · wrong-result | fail · wrong-result | fail · wrong-result |
+| `web.net.connection` Network Information + online state | pass | pass | pass | pass | pass | pass |
+| `web.net.csp` Content Security Policy in force | pass | pass | pass | pass | pass | pass |
+| `web.net.eventSource` Server-Sent Events | pass | pass | pass | pass | pass | pass |
+| `web.net.fetch` fetch — same-origin, CORS, streaming | pass | pass | pass | pass | pass | pass |
+| `web.net.permissionsPolicy` Permissions-Policy introspection | pass | pass | pass | pass | pass | pass |
+| `web.net.webTransport` WebTransport | pass | pass | pass | pass | pass | pass |
+| `web.net.websocket` WebSocket connect | pass | pass | pass | pass | pass | pass |
 
 ## web.platform
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `web.platform.battery` Battery Status | pass | pass | pass | pass | pass |
-| `web.platform.gamepad` Gamepad API | pass | pass | pass | pass | pass |
-| `web.platform.locks` Web Locks | pass | pass | pass | pass | pass |
-| `web.platform.memory` Memory measurement | pass | pass | pass | pass | pass |
-| `web.platform.midi` Web MIDI (non-sysex) | pass | pass | pass | pass | pass |
-| `web.platform.permissionsApi` Permissions API coverage | pass | pass | pass | pass | pass |
-| `web.platform.scheduler` Prioritised task scheduling | pass | pass | pass | pass | pass |
-| `web.platform.speechRecognition` Speech Recognition | pass | pass | pass | pass | pass |
-| `web.platform.speechSynthesis` Speech Synthesis voices | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.platform.timerResolution` performance.now() resolution | pass | pass | pass | pass | pass |
-| `web.platform.userAgentData` userAgentData high-entropy hints | pass | pass | pass | pass | pass |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `web.platform.battery` Battery Status | pass | pass | pass | pass | pass | pass |
+| `web.platform.gamepad` Gamepad API | pass | pass | pass | pass | pass | pass |
+| `web.platform.locks` Web Locks | pass | pass | pass | pass | pass | pass |
+| `web.platform.memory` Memory measurement | pass | pass | pass | pass | pass | pass |
+| `web.platform.midi` Web MIDI (non-sysex) | pass | pass | pass | pass | pass | pass |
+| `web.platform.permissionsApi` Permissions API coverage | pass | pass | pass | pass | pass | pass |
+| `web.platform.scheduler` Prioritised task scheduling | pass | pass | pass | pass | pass | pass |
+| `web.platform.speechRecognition` Speech Recognition | pass | pass | pass | pass | pass | pass |
+| `web.platform.speechSynthesis` Speech Synthesis voices | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.platform.timerResolution` performance.now() resolution | pass | pass | pass | pass | pass | pass |
+| `web.platform.userAgentData` userAgentData high-entropy hints | pass | pass | pass | pass | pass | pass |
 
 ## web.sensors
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `web.sensors.absoluteOrientation` AbsoluteOrientationSensor (Generic Sensor) | pass | pass | pass | pass | pass |
-| `web.sensors.accelerometer` Accelerometer (Generic Sensor) | pass | pass | pass | pass | pass |
-| `web.sensors.ambientLight` AmbientLightSensor (Generic Sensor) | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.sensors.deviceMotionEvents` DeviceMotion / DeviceOrientation events | pass | pass | pass | pass | pass |
-| `web.sensors.geolocation` Geolocation — one-shot fix | blocked · host-callback-missing | blocked · host-callback-missing | blocked · host-callback-missing | blocked · host-callback-missing | blocked · host-callback-missing |
-| `web.sensors.geolocationWatch` Geolocation — watchPosition | skip | skip | skip | skip | skip |
-| `web.sensors.gyroscope` Gyroscope (Generic Sensor) | pass | pass | pass | pass | pass |
-| `web.sensors.magnetometer` Magnetometer (Generic Sensor) | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.sensors.relativeOrientation` RelativeOrientationSensor | pass | pass | pass | pass | pass |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `web.sensors.absoluteOrientation` AbsoluteOrientationSensor (Generic Sensor) | pass | pass | pass | pass | pass | pass |
+| `web.sensors.accelerometer` Accelerometer (Generic Sensor) | pass | pass | pass | pass | pass | pass |
+| `web.sensors.ambientLight` AmbientLightSensor (Generic Sensor) | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.sensors.deviceMotionEvents` DeviceMotion / DeviceOrientation events | pass | pass | pass | pass | pass | pass |
+| `web.sensors.geolocation` Geolocation — one-shot fix | blocked · host-callback-missing | blocked · host-callback-missing | blocked · host-callback-missing | blocked · host-callback-missing | blocked · host-callback-missing | blocked · host-callback-missing |
+| `web.sensors.geolocationWatch` Geolocation — watchPosition | skip | skip | skip | skip | skip | skip |
+| `web.sensors.gyroscope` Gyroscope (Generic Sensor) | pass | pass | pass | pass | pass | pass |
+| `web.sensors.magnetometer` Magnetometer (Generic Sensor) | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.sensors.relativeOrientation` RelativeOrientationSensor | pass | pass | pass | pass | pass | pass |
 
 ## web.storage
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `web.storage.cacheStorage` CacheStorage round-trip | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.storage.cookies` Cookies + Cookie Store API | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder |
-| `web.storage.indexedDb` IndexedDB round-trip | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.storage.quota` Quota estimate + persistence request | pass | pass | pass | pass | pass |
-| `web.storage.storageAccessApi` Storage Access API | pass | pass | pass | pass | pass |
-| `web.storage.webStorage` localStorage + sessionStorage round-trip | pass | pass | pass | pass | pass |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `web.storage.cacheStorage` CacheStorage round-trip | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.storage.cookies` Cookies + Cookie Store API | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder |
+| `web.storage.indexedDb` IndexedDB round-trip | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.storage.quota` Quota estimate + persistence request | pass | pass | pass | pass | pass | pass |
+| `web.storage.storageAccessApi` Storage Access API | pass | pass | pass | pass | pass | pass |
+| `web.storage.webStorage` localStorage + sessionStorage round-trip | pass | pass | pass | pass | pass | pass |
 
 ## web.ux
 
-| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
-|---|---|---|---|---|---|
-| `web.ux.badging` App Badging | pass | pass | pass | pass | pass |
-| `web.ux.clipboardRead` Clipboard read | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied |
-| `web.ux.clipboardWrite` Clipboard write | pass | pass | pass | pass | pass |
-| `web.ux.contactPicker` Contact Picker | fail · threw | fail · threw | fail · threw | fail · threw | fail · threw |
-| `web.ux.eyeDropper` EyeDropper | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.ux.fullscreen` Fullscreen | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder |
-| `web.ux.idleDetection` Idle Detection | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied |
-| `web.ux.notifications` Notifications | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.ux.orientationLock` Screen orientation lock | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.ux.push` Push API | fail · not-implemented | fail · not-implemented | fail · not-implemented | fail · not-implemented | fail · not-implemented |
-| `web.ux.share` Web Share — text and URL | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
-| `web.ux.shareFiles` Web Share — files | skip | skip | skip | skip | skip |
-| `web.ux.vibrate` Vibration | pass | pass | pass | pass | pass |
-| `web.ux.viewTransitions` View Transitions | pass | pass | pass | pass | pass |
-| `web.ux.virtualKeyboard` VirtualKeyboard API | pass | pass | pass | pass | pass |
-| `web.ux.wakeLock` Screen Wake Lock | pass | pass | pass | pass | pass |
+| Probe | 2026-09-19_codec1_host-0.19.1_android-16_1406 | 2026-09-19_codec1_host-0.19.1_android-16_1131 | 2026-09-19_codec1_host-0.19.1_android-16_1053 | 2026-09-19_codec1_host-0.19.1_android-16_1038 | 2026-09-19_codec1_host-0.19.1_android-16_1005 | 2026-09-19_codec1_host-0.19.1_android-16_0925 |
+|---|---|---|---|---|---|---|
+| `web.ux.badging` App Badging | pass | pass | pass | pass | pass | pass |
+| `web.ux.clipboardRead` Clipboard read | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied |
+| `web.ux.clipboardWrite` Clipboard write | pass | pass | pass | pass | pass | pass |
+| `web.ux.contactPicker` Contact Picker | fail · threw | fail · threw | fail · threw | fail · threw | fail · threw | fail · threw |
+| `web.ux.eyeDropper` EyeDropper | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.ux.fullscreen` Fullscreen | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder | blocked · policy-blocked-by-embedder |
+| `web.ux.idleDetection` Idle Detection | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied | blocked · os-denied |
+| `web.ux.notifications` Notifications | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.ux.orientationLock` Screen orientation lock | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.ux.push` Push API | fail · not-implemented | fail · not-implemented | fail · not-implemented | fail · not-implemented | fail · not-implemented | fail · not-implemented |
+| `web.ux.share` Web Share — text and URL | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented | unsupported · not-implemented |
+| `web.ux.shareFiles` Web Share — files | skip | skip | skip | skip | skip | skip |
+| `web.ux.vibrate` Vibration | pass | pass | pass | pass | pass | pass |
+| `web.ux.viewTransitions` View Transitions | pass | pass | pass | pass | pass | pass |
+| `web.ux.virtualKeyboard` VirtualKeyboard API | pass | pass | pass | pass | pass | pass |
+| `web.ux.wakeLock` Screen Wake Lock | pass | pass | pass | pass | pass | pass |

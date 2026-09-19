@@ -1,0 +1,22 @@
+{
+  "productId": "sondeprobes",
+  "sdk": {
+    "@parity/product-sdk": "0.27.0",
+    "@parity/product-sdk-host": "0.19.1",
+    "@parity/product-sdk-keys": "0.3.24",
+    "@parity/product-sdk-statement-store": "0.6.9",
+    "@parity/product-sdk-terminal": "0.8.2",
+    "@parity/truapi": "0.13.1"
+  },
+  "notes": [
+    "Opt-in probes not selected.",
+    "host.cloud.allowance and host.limits.notifications timed out with wall times of 24 min and 7.5 min against budgets of 150 s and 120 s. That fits the phone sleeping or the app going to the background mid-run, which stretches timers; treat both timeouts as unconfirmed.",
+    "SDK versions are sonde's exact pins at this build (its package.json); the markdown report does not carry them.",
+    "Picked file names are redacted."
+  ],
+  "retracted": {
+    "host.cloud.upload": "Not measured: sonde's spend gate needs an identified chain, and getChainSpec answered for no chain this run. Fixed in sonde (89bab46): it falls back to isChainSupported.",
+    "host.preimage.submit": "Not measured: sonde's spend gate needs an identified chain, and getChainSpec answered for no chain this run. Fixed in sonde (89bab46): it falls back to isChainSupported.",
+    "host.statement.submit": "Not measured: sonde's spend gate needs an identified chain, and getChainSpec answered for no chain this run. Fixed in sonde (89bab46): it falls back to isChainSupported."
+  }
+}
