@@ -10,7 +10,7 @@
   },
   "notes": [
     "Opt-in probes not selected.",
-    "host.cloud.allowance and host.limits.notifications timed out with wall times of 24 min and 7.5 min against budgets of 150 s and 120 s. That fits the phone sleeping or the app going to the background mid-run, which stretches timers; treat both timeouts as unconfirmed.",
+    "host.cloud.allowance and host.limits.notifications timed out with wall times of 24 min and 7.5 min against budgets of 150 s and 120 s. The phone was locked during the run (confirmed by the tester), which suspends the page's timers; these are not host hangs.",
     "SDK versions are sonde's exact pins at this build (its package.json); the markdown report does not carry them.",
     "Picked file names are redacted."
   ],
