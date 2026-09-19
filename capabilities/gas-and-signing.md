@@ -1,6 +1,6 @@
 ---
 capability: Gas and signing
-probes: [host.gas.smartContractAllowance, host.gas.autoSigning]
+probes: [host.gas.smartContractAllowance, host.gas.autoSigning, host.gas.firstTransaction]
 ---
 
 # Gas and signing
@@ -69,5 +69,6 @@ an app-local key (seed it from `deriveEntropy`) and pays its own gas.
 |---|---|---|---|---|
 | `host.gas.smartContractAllowance`  | — | — | — | — |
 | `host.gas.autoSigning`  | — | — | — | — |
+| `host.gas.firstTransaction`  | — | — | — | — |
 
 <!-- measured:end -->

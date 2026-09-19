@@ -42,6 +42,7 @@
  "File System Access — directory picker": "web.filesystem.showDirectoryPicker",
  "File System Access — open picker": "web.filesystem.showOpenFilePicker",
  "File System Access — save picker": "web.filesystem.showSaveFilePicker",
+ "First transaction — does the host pay its gas in PGAS?": "host.gas.firstTransaction",
  "Fullscreen": "web.ux.fullscreen",
  "Gamepad API": "web.platform.gamepad",
  "Geolocation — one-shot fix": "web.sensors.geolocation",
