@@ -5,7 +5,7 @@
   "complete": true,
   "notes": [
     "Run with no permissions previously granted to sondeprobes.dot: every prompt was fresh, including Android's own location dialog. Web geolocation still failed, in 5 ms, with the permission at 'prompt'.",
-    "host.cloud.upload tests the SDK's cloudStorage.upload, which is known not to work (almanac P6). The route that works, getPreimageManager().submit(), is probed as host.preimage.submit from sonde's 2026-09-19 12:00-ish build on.",
+    "host.cloud.upload tests the SDK's cloudStorage.upload, which is known not to work (almanac P6). The route that works, getPreimageManager().submit(), is probed as host.preimage.submit from sonde commit 2bf03a2 on.",
     "SDK versions are sonde's exact pins at this build (its package.json); the markdown report does not carry them.",
     "Picked file names are redacted."
   ],
@@ -234,7 +234,7 @@
       "diagnosis": "allowance-missing",
       "ms": 3714,
       "detail": "Even a ~26-byte upload failed — this is not a size problem.",
-      "evidence": "account               : 5HjVVWiUMv…\ncanary (26B)          : failed — {\"isSdkError\":true,\"source\":\"cloud-storage\",\"name\":\"ProductCloudStorageError\"}\nThe allowance request DOES raise a prompt, so the host can surface them. A store\nthat produces none is therefore not a permission callback going unanswered.\nEither the write is sponsored by the slot account and never needed a tap and is\nhanging earlier, or it never reaches the signing path at all. Either way it\nshould reject rather than stall."
+      "evidence": "account               : <product account #0>\ncanary (26B)          : failed — {\"isSdkError\":true,\"source\":\"cloud-storage\",\"name\":\"ProductCloudStorageError\"}\nThe allowance request DOES raise a prompt, so the host can surface them. A store\nthat produces none is therefore not a permission callback going unanswered.\nEither the write is sponsored by the slot account and never needed a tap and is\nhanging earlier, or it never reaches the signing path at all. Either way it\nshould reject rather than stall."
     },
     "host.cloud.roundTrip": {
       "title": "Fetch → CID verify → decrypt",

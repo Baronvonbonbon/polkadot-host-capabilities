@@ -247,7 +247,7 @@ Latest detail per probe:
 - `host.cloud.upload` — Even a ~26-byte upload failed — this is not a size problem.
 
   ```
-  account               : 5HjVVWiUMv…
+  account               : <product account #0>
   canary (26B)          : failed — {"isSdkError":true,"source":"cloud-storage","name":"ProductCloudStorageError"}
   The allowance request DOES raise a prompt, so the host can surface them. A store
   that produces none is therefore not a permission callback going unanswered.
