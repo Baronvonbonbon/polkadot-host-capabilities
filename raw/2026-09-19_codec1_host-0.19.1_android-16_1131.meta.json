@@ -1,0 +1,22 @@
+{
+  "productId": "sondeprobes",
+  "sdk": {
+    "@parity/product-sdk": "0.27.0",
+    "@parity/product-sdk-host": "0.19.1",
+    "@parity/product-sdk-keys": "0.3.24",
+    "@parity/product-sdk-statement-store": "0.6.9",
+    "@parity/product-sdk-terminal": "0.8.2",
+    "@parity/truapi": "0.13.1"
+  },
+  "notes": [
+    "First run with sonde's limit probes. Opt-in probes (slow, spends-quota, crash-risk) were not selected.",
+    "SDK versions are sonde's exact pins at this build (its package.json); the markdown report does not carry them.",
+    "Picked file names and the product account are redacted."
+  ],
+  "retracted": {
+    "host.limits.bridgePayload": "sonde grew the input to deriveEntropy, which accepts at most 32 bytes, so this measured that call's argument check, not the bridge. Fixed in sonde (a4683ff): it now round-trips growing values through host local storage.",
+    "host.preimage.submit": "Not measured: it depended on host.cloud.allowance, a gesture probe that always runs after the unattended ones. Fixed in sonde (a4683ff): it requests the allowance itself.",
+    "host.limits.statementSize": "Not a size limit: the account was full of statements with no expiry, which sonde's own host.statement.submit had been adding every run, so any statement with a finite expiry was refused AccountFull(minExpiry=i64::MAX). The refusal itself is a real platform behaviour (see the Statement Store page). Fixed in sonde (a4683ff).",
+    "host.limits.statementLatency": "Not measured: refused for the same reason as host.limits.statementSize — the account was full of sonde's own no-expiry statements. Fixed in sonde (a4683ff)."
+  }
+}

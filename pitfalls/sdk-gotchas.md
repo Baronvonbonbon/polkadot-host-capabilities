@@ -17,7 +17,11 @@ Small things in `@parity/product-sdk*` that cost an afternoon each.
   when you publish to devnet, or `createApp` throws that the chain isn't supported.
 - **Connected isn't selected.** After `wallet.connect()`, call `wallet.selectAccount(address)`, or
   storage calls stall.
-- **Statement expiry is `(unix seconds << 32) | sequence`**, as a bigint.
+- **Statement expiry is `(unix seconds << 32) | sequence`**, as a bigint. **Leaving it out does
+  not mean "short-lived".** The host keeps the statement with the maximum expiry, forever, and a
+  handful of those will block every later statement that has a real expiry
+  (`AccountFull(…, minExpiry=9223372036854775807)`). See
+  [statement-store](../capabilities/statement-store.md).
 - **The host's lookup takes a bare 32-byte digest**, not a CID. `cidToPreimageKey` accepts SHA-256
   CIDs, but only BLAKE2b-256 content is found.
 - **`getAnonymousAlias()` returns `null`.** Don't design on the Ring VRF alias yet.

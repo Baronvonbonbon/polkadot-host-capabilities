@@ -25,7 +25,9 @@ A statement holds 512 bytes, and an account about 1 KiB. So the Statement Store 
 connection setup, and WebRTC carries the payload:
 
 - **Non-trickle, minified SDP.** Wait for ICE gathering to finish, then send only ufrag, password,
-  DTLS fingerprint and a few candidates: about 150–250 bytes. Rebuild the full SDP from a template
+  DTLS fingerprint and a few candidates. The estimate was 150–250 bytes; measured inside the app
+  (2026-09-19), it was **387 bytes with 2 candidates**. That still fits one 512-byte statement, but
+  only just. Rebuild the full SDP from a template
   at the other end.
 - **One statement per side per order, replaced in place:** the offer, then the answer.
 - **Sealed, on a topic derived from a secret the parties share.** Candidates carry IP addresses, and
